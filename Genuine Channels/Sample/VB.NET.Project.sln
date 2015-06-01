@@ -1,0 +1,33 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "KnownObjects", "VB.NET\KnownObjects\KnownObjects.vbproj", "{8C7DB551-AAA0-4439-B80D-17652440D25B}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Client", "VB.NET\Client\Client.vbproj", "{BF9F07ED-D1DB-4479-AE32-EF18F75256AC}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Server", "VB.NET\Server\Server.vbproj", "{4D00C235-B42A-423E-9BAA-E5353A85E5ED}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{8C7DB551-AAA0-4439-B80D-17652440D25B}.Debug.ActiveCfg = Debug|.NET
+		{8C7DB551-AAA0-4439-B80D-17652440D25B}.Debug.Build.0 = Debug|.NET
+		{8C7DB551-AAA0-4439-B80D-17652440D25B}.Release.ActiveCfg = Release|.NET
+		{8C7DB551-AAA0-4439-B80D-17652440D25B}.Release.Build.0 = Release|.NET
+		{BF9F07ED-D1DB-4479-AE32-EF18F75256AC}.Debug.ActiveCfg = Debug|.NET
+		{BF9F07ED-D1DB-4479-AE32-EF18F75256AC}.Debug.Build.0 = Debug|.NET
+		{BF9F07ED-D1DB-4479-AE32-EF18F75256AC}.Release.ActiveCfg = Release|.NET
+		{BF9F07ED-D1DB-4479-AE32-EF18F75256AC}.Release.Build.0 = Release|.NET
+		{4D00C235-B42A-423E-9BAA-E5353A85E5ED}.Debug.ActiveCfg = Debug|.NET
+		{4D00C235-B42A-423E-9BAA-E5353A85E5ED}.Debug.Build.0 = Debug|.NET
+		{4D00C235-B42A-423E-9BAA-E5353A85E5ED}.Release.ActiveCfg = Release|.NET
+		{4D00C235-B42A-423E-9BAA-E5353A85E5ED}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
