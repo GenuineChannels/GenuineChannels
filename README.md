@@ -9,7 +9,7 @@ Install the [Nuget package](https://www.nuget.org/packages/GenuineChannels/):
 
 >Install-Package GenuineChannels
 
-Please refer to this [wiki page](https://github.com/zyanfx/GenuineChannels/wiki) for detailed documentation including programming and debugging guides.
+Please refer to this [wiki page](https://github.com/zyanfx/GenuineChannels/wiki) for further documentation including programming and debugging guides, samples and API reference.
 
 # License
 The MIT License (MIT)
