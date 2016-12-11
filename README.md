@@ -1,7 +1,13 @@
 # GenuineChannels
 Collection of custom .NET Remoting channels licensed under MIT license.
 
-Please refer to the Programming Guide for details.
+Please refer to the [Programming Guide](https://github.com/zyanfx/GenuineChannels/blob/master/Genuine%20Channels/Programming%20Guide.pdf) for details.
+
+# Getting started
+
+Install the [Nuget package](https://www.nuget.org/packages/GenuineChannels/):
+
+>Install-Package GenuineChannels
 
 # License
 The MIT License (MIT)
