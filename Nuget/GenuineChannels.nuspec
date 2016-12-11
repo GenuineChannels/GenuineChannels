@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>GenuineChannels</id>
+    <version>2.5.9.9</version>
+    <authors>Dmitry Belikov, Sergey Tkachev</authors>
+    <owners>yallie, rainbird</owners>
+    <licenseUrl>https://raw.githubusercontent.com/zyanfx/GenuineChannels/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/zyanfx/GenuineChannels</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/zyanfx/GenuineChannels/master/Nuget/GenuineChannelsLogo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <title>Genuine Channels for .NET Remoting</title>
+    <summary>Genuine Channels is a high-end transport environment accessible through .NET Remoting and Direct eXchange Manager (DXM) API.</summary>
+    <description>Genuine Channels is a high-end transport environment accessible through .NET Remoting and Direct eXchange Manager (DXM) API. Besides offering steady connections in any environment thanks to configurable reconnect feature, Genuine Channels support communication with clients located behind firewalls, NAT and proxy servers (including those requiring authorization). Data encryption managed by security sessions and data compression without installing sinks provide for both easier coding and fast and secure client-server communication.</description>
+    <releaseNotes>This is the initial release of the MIT-licensed open-source version of GenuineChannels.</releaseNotes>
+    <copyright>Copyright (c) 2005-2015 Dmitry Belikov, Sergey Tkachev</copyright>
+    <tags>.net remoting duplex tcp udp shared memory channel channels rpc security async compression encryption communication socket sockets nat firewall 
+    </tags>
+  </metadata>
+  <files>
+    <file src="..\Genuine Channels\DLL\Framework 1.0\Release\GenuineChannels.dll" target="lib\net10\GenuineChannels.dll" />
+    <file src="..\Genuine Channels\DLL\Framework 1.0\Release\GenuineChannels.xml" target="lib\net10\GenuineChannels.xml" />
+    <file src="..\Genuine Channels\DLL\Framework 1.0\Release\ICSharpCode.SharpZipLib.dll" target="lib\net10\ICSharpCode.SharpZipLib.dll" />
+    <file src="..\Genuine Channels\DLL\Framework 1.1\Release\GenuineChannels.dll" target="lib\net11\GenuineChannels.dll" />
+    <file src="..\Genuine Channels\DLL\Framework 1.1\Release\GenuineChannels.xml" target="lib\net11\GenuineChannels.xml" />
+    <file src="..\Genuine Channels\DLL\Framework 1.1\Release\ICSharpCode.SharpZipLib.dll" target="lib\net11\ICSharpCode.SharpZipLib.dll" />
+    <file src="..\Genuine Channels\DLL\Framework 2.0\Release\GenuineChannels.dll" target="lib\net20\GenuineChannels.dll" />
+    <file src="..\Genuine Channels\DLL\Framework 2.0\Release\GenuineChannels.xml" target="lib\net20\GenuineChannels.xml" />
+    <file src="..\Genuine Channels\DLL\Framework 2.0\Release\ICSharpCode.SharpZipLib.dll" target="lib\net20\ICSharpCode.SharpZipLib.dll" />
+  </files>
+</package>
