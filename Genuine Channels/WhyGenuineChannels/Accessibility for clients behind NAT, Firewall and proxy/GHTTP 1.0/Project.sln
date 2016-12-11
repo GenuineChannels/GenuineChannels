@@ -1,0 +1,33 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{AB36B7CF-B4A6-47B6-8B4A-8D5FD484A548}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnownObjects", "KnownObjects\KnownObjects.csproj", "{22EF26CA-8723-4BF3-AF07-AAACB6E4D629}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHTTPChatSample", "http://localhost/GHTTPChatSample/GHTTPChatSample.csproj", "{D6A6DF05-E9EC-403F-AA31-FCA963AFF69B}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{AB36B7CF-B4A6-47B6-8B4A-8D5FD484A548}.Debug.ActiveCfg = Debug|.NET
+		{AB36B7CF-B4A6-47B6-8B4A-8D5FD484A548}.Debug.Build.0 = Debug|.NET
+		{AB36B7CF-B4A6-47B6-8B4A-8D5FD484A548}.Release.ActiveCfg = Release|.NET
+		{AB36B7CF-B4A6-47B6-8B4A-8D5FD484A548}.Release.Build.0 = Release|.NET
+		{22EF26CA-8723-4BF3-AF07-AAACB6E4D629}.Debug.ActiveCfg = Debug|.NET
+		{22EF26CA-8723-4BF3-AF07-AAACB6E4D629}.Debug.Build.0 = Debug|.NET
+		{22EF26CA-8723-4BF3-AF07-AAACB6E4D629}.Release.ActiveCfg = Release|.NET
+		{22EF26CA-8723-4BF3-AF07-AAACB6E4D629}.Release.Build.0 = Release|.NET
+		{D6A6DF05-E9EC-403F-AA31-FCA963AFF69B}.Debug.ActiveCfg = Debug|.NET
+		{D6A6DF05-E9EC-403F-AA31-FCA963AFF69B}.Debug.Build.0 = Debug|.NET
+		{D6A6DF05-E9EC-403F-AA31-FCA963AFF69B}.Release.ActiveCfg = Release|.NET
+		{D6A6DF05-E9EC-403F-AA31-FCA963AFF69B}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
