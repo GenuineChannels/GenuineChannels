@@ -14,8 +14,7 @@
     <description>Genuine Channels is a high-end transport environment accessible through .NET Remoting and Direct eXchange Manager (DXM) API. Besides offering steady connections in any environment thanks to configurable reconnect feature, Genuine Channels support communication with clients located behind firewalls, NAT and proxy servers (including those requiring authorization). Data encryption managed by security sessions and data compression without installing sinks provide for both easier coding and fast and secure client-server communication.</description>
     <releaseNotes>This is the initial release of the MIT-licensed open-source version of GenuineChannels.</releaseNotes>
     <copyright>Copyright (c) 2005-2015 Dmitry Belikov, Sergey Tkachev</copyright>
-    <tags>.net remoting duplex tcp udp shared memory channel channels rpc security async compression encryption communication socket sockets nat firewall 
-    </tags>
+    <tags>.net remoting duplex tcp udp shared memory channel genuine channels rpc security async compression encryption communication socket sockets nat firewall</tags>
   </metadata>
   <files>
     <file src="..\Genuine Channels\DLL\Framework 1.0\Release\GenuineChannels.dll" target="lib\net10\GenuineChannels.dll" />
