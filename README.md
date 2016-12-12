@@ -1,7 +1,9 @@
+<img src="https://raw.githubusercontent.com/zyanfx/GenuineChannels/master/Nuget/GenuineChannelsLogo.png" width=100 heigh=100>
+
 # GenuineChannels
 Collection of custom .NET Remoting channels licensed under MIT license.
 
-Besides offering steady connections in any environment thanks to configurable reconnect feature, Genuine Channels support communication with clients located behind firewalls, NAT and proxy servers (including those requiring authorization). Data encryption managed by security sessions and data compression without installing sinks provide for both easier coding and fast and secure client-server communication.
+>Besides offering steady connections in any environment thanks to configurable reconnect feature, Genuine Channels support communication with clients located behind firewalls, NAT and proxy servers (including those requiring authorization). Data encryption managed by security sessions and data compression without installing sinks provide for both easier coding and fast and secure client-server communication.
 
 # Getting started
 
@@ -9,7 +11,7 @@ Install the [Nuget package](https://www.nuget.org/packages/GenuineChannels/):
 
 >Install-Package GenuineChannels
 
-Please refer to this [wiki page](https://github.com/zyanfx/GenuineChannels/wiki) for further documentation including programming and debugging guides, samples and API reference.
+Please refer to this [wiki page](https://github.com/zyanfx/GenuineChannels/wiki) for details.
 
 # License
 The MIT License (MIT)
