@@ -1,7 +1,7 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
@@ -74,7 +74,6 @@ namespace Belikov.GenuineChannels.GenuineUdp
 			{
 				lock (this)
 					this._isProcessed = value;
-					
 			}
 		}
 		private bool _isProcessed;
@@ -212,7 +211,7 @@ namespace Belikov.GenuineChannels.GenuineUdp
 		/// <summary>
 		/// Closes the current stream and releases any resources associated with the current stream.
 		/// </summary>
-		public void Dispose()
+		public new void Dispose()
 		{
 			this.Close();
 		}
@@ -242,7 +241,7 @@ namespace Belikov.GenuineChannels.GenuineUdp
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports reading.
 		/// </summary>
-		public override bool CanRead 
+		public override bool CanRead
 		{
 			get
 			{
@@ -253,7 +252,7 @@ namespace Belikov.GenuineChannels.GenuineUdp
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports seeking.
 		/// </summary>
-		public override bool CanSeek 
+		public override bool CanSeek
 		{
 			get
 			{
@@ -264,7 +263,7 @@ namespace Belikov.GenuineChannels.GenuineUdp
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports writing.
 		/// </summary>
-		public override bool CanWrite 
+		public override bool CanWrite
 		{
 			get
 			{
@@ -275,7 +274,7 @@ namespace Belikov.GenuineChannels.GenuineUdp
 		/// <summary>
 		/// Gets the length in bytes of the stream.
 		/// </summary>
-		public override long Length 
+		public override long Length
 		{
 			get
 			{
@@ -287,7 +286,7 @@ namespace Belikov.GenuineChannels.GenuineUdp
 		/// Gets or sets the position within the current stream.
 		/// Always fires NotSupportedException exception.
 		/// </summary>
-		public override long Position 
+		public override long Position
 		{
 			get
 			{

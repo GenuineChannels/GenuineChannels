@@ -1,7 +1,7 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
@@ -149,7 +149,7 @@ namespace Belikov.GenuineChannels
 			port = Convert.ToInt32(match.Groups["port"].Value);
 			return match.Groups["hostName"].Value;
 		}
-		private static Regex _splitUrlToHostAndPort = new Regex(@"^g\w+://(?<hostName>[^:]+):(?<port>\d+)", 
+		private static Regex _splitUrlToHostAndPort = new Regex(@"^g\w+://(?<hostName>[^:]+):(?<port>\d+)",
 			RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
 		/// <summary>
@@ -170,7 +170,7 @@ namespace Belikov.GenuineChannels
 				port = Convert.ToInt32(match.Groups["port"].Value);
 			return match.Groups["hostName"].Value;
 		}
-		private static Regex _splitHttpLinkToHostAndPort = new Regex(@"^g\w+://(?<hostName>[^:/\\]+)(:(?<port>\d+))?", 
+		private static Regex _splitHttpLinkToHostAndPort = new Regex(@"^g\w+://(?<hostName>[^:/\\]+)(:(?<port>\d+))?",
 			RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
 		/// <summary>
@@ -606,7 +606,7 @@ namespace Belikov.GenuineChannels
 		}
 
 		/// <summary>
-		/// Copies the content of the input stream into the output stream without touching a part 
+		/// Copies the content of the input stream into the output stream without touching a part
 		/// with the specified size in the end of the input stream.
 		/// </summary>
 		/// <param name="inputStream">The incoming data.</param>
@@ -654,7 +654,7 @@ namespace Belikov.GenuineChannels
 		}
 
 		/// <summary>
-		/// Answers Genuine Channels URI and Transport Context via which access to the remote 
+		/// Answers Genuine Channels URI and Transport Context via which access to the remote
 		/// MarshalByRefObject object is performed.
 		/// </summary>
 		/// <param name="marshalByRefObject">MarshalByRefObject instance to fetch the URI from.</param>
@@ -728,7 +728,7 @@ namespace Belikov.GenuineChannels
 
 			if (ipAddress == null)
 			{
-				IPAddress[] addresses = Dns.Resolve(url).AddressList;
+				IPAddress[] addresses = Dns.GetHostEntry(url).AddressList;
 				if (addresses.Length <= 0)
 					throw GenuineExceptions.Get_Connect_CanNotResolveHostName(url);
 				ipAddress = addresses[0];
@@ -931,17 +931,17 @@ namespace Belikov.GenuineChannels
 		}
 		private static Guid _defaultHostIdentifier = Guid.NewGuid();
 
-        /// <summary>
-        /// Gets the current thread identifier.
-        /// </summary>
-        /// <value>A 32-bit signed integer that is the identifier of the current thread.</value>
-        public static int CurrentThreadId
-        {
-            get
-            {
-                return AppDomain.GetCurrentThreadId();
-            }
-        }
+		/// <summary>
+		/// Gets the current thread identifier.
+		/// </summary>
+		/// <value>A 32-bit signed integer that is the identifier of the current thread.</value>
+		public static int CurrentThreadId
+		{
+			get
+			{
+				return Thread.CurrentThread.ManagedThreadId;
+			}
+		}
 
 
 #if DEBUG

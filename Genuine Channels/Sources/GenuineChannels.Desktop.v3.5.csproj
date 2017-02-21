@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{002F15BE-46E6-47E9-8317-660A0D3CEA3E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Belikov.GenuineChannels</RootNamespace>
+    <AssemblyName>GenuineChannels</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug35\</OutputPath>
+    <BaseIntermediateOutputPath>obj.fx35</BaseIntermediateOutputPath>
+    <DefineConstants>TRACE;DEBUG;FRM20</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release35</OutputPath>
+    <BaseIntermediateOutputPath>obj.fx35</BaseIntermediateOutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Authorization\ConnectionIsBeingAcceptedGlobalEventArgs.cs" />
+    <Compile Include="BroadcastEngine\BroadcastProxy.cs" />
+    <Compile Include="BroadcastEngine\Court.cs" />
+    <Compile Include="BroadcastEngine\CourtCollection.cs" />
+    <Compile Include="BroadcastEngine\Dispatcher.cs" />
+    <Compile Include="BroadcastEngine\DispatcherFilterKeeper.cs" />
+    <Compile Include="BroadcastEngine\GeneralBroadcastSender.cs" />
+    <Compile Include="BroadcastEngine\IBroadcastSenderProvider.cs" />
+    <Compile Include="BroadcastEngine\IMulticastFilter.cs" />
+    <Compile Include="BroadcastEngine\LocalPerformer.cs" />
+    <Compile Include="BroadcastEngine\ReceiverInfo.cs" />
+    <Compile Include="BroadcastEngine\ResultCollector.cs" />
+    <Compile Include="BroadcastEngine\UniqueCallTracer.cs" />
+    <Compile Include="BufferPooling\BufferKeeper.cs" />
+    <Compile Include="BufferPooling\BufferPool.cs" />
+    <Compile Include="Connection\ConnectionAcceptedCancellableEventParameter.cs" />
+    <Compile Include="Connection\ConnectionManager.cs" />
+    <Compile Include="Connection\ConnectionStateSignaller.cs" />
+    <Compile Include="Connection\GeneralConnection.cs" />
+    <Compile Include="Connection\GenuineConnectionType.cs" />
+    <Compile Include="Connection\GenuinePersistentConnectionState.cs" />
+    <Compile Include="Connection\PersistentConnectionStorage.cs" />
+    <Compile Include="Connection\PhysicalConnection.cs" />
+    <Compile Include="DirectExchange\DirectExchangeManager.cs" />
+    <Compile Include="DirectExchange\IServerServiceEntry.cs" />
+    <Compile Include="DirectExchange\IStreamResponseHandler.cs" />
+    <Compile Include="DirectExchange\SyncResponseProcessorWithEvent.cs" />
+    <Compile Include="DirectExchange\UniversalAsyncResponseProcessor.cs" />
+    <Compile Include="DotNetRemotingLayer\AsyncSinkStackResponseProcessor.cs" />
+    <Compile Include="DotNetRemotingLayer\BasicChannelWithSecurity.cs" />
+    <Compile Include="DotNetRemotingLayer\GenuineEventArgs.cs" />
+    <Compile Include="DotNetRemotingLayer\GenuineEventType.cs" />
+    <Compile Include="DotNetRemotingLayer\GenuineGlobalEventProvider.cs" />
+    <Compile Include="DotNetRemotingLayer\GenuineTcpClientTransportSink.cs" />
+    <Compile Include="DotNetRemotingLayer\GenuineTcpClientTransportSinkProvider.cs" />
+    <Compile Include="DotNetRemotingLayer\GenuineUniversalServerTransportSink.cs" />
+    <Compile Include="DotNetRemotingLayer\IGenuineEventProvider.cs" />
+    <Compile Include="DotNetRemotingLayer\ISessionSupport.cs" />
+    <Compile Include="DotNetRemotingLayer\SyncSinkStackResponseProcessor.cs" />
+    <Compile Include="GCHandleKeeper.cs" />
+    <Compile Include="GenuineExceptions.cs" />
+    <Compile Include="GenuineHttp\GenuineHttpClientChannel.cs" />
+    <Compile Include="GenuineHttp\GenuineHttpServerChannel.cs" />
+    <Compile Include="GenuineHttp\HttpClientConnection.cs" />
+    <Compile Include="GenuineHttp\HttpClientConnectionManager.cs" />
+    <Compile Include="GenuineHttp\HttpInvocationConnection.cs" />
+    <Compile Include="GenuineHttp\HttpMessageCoder.cs" />
+    <Compile Include="GenuineHttp\HttpPacketType.cs" />
+    <Compile Include="GenuineHttp\HttpServerConnection.cs" />
+    <Compile Include="GenuineHttp\HttpServerConnectionManager.cs" />
+    <Compile Include="GenuineHttp\HttpServerHandler.cs" />
+    <Compile Include="GenuineHttp\HttpServerRequestResult.cs" />
+    <Compile Include="GenuineHttp\HttpWebRequestCop.cs" />
+    <Compile Include="GenuineSharedMemory\GenuineSharedMemoryChannel.cs" />
+    <Compile Include="GenuineSharedMemory\ManualNamedEvent.cs" />
+    <Compile Include="GenuineSharedMemory\SharedMemoryConnection.cs" />
+    <Compile Include="GenuineSharedMemory\SharedMemoryConnectionManager.cs" />
+    <Compile Include="GenuineSharedMemory\SMAcceptConnectionClosure.cs" />
+    <Compile Include="GenuineSharedMemory\WindowsAPI.cs" />
+    <Compile Include="GenuineTcp\AcceptConnectionClosure.cs" />
+    <Compile Include="GenuineTcp\Async_InitiateSocketReceiving.cs" />
+    <Compile Include="GenuineTcp\Async_InitiateSocketSending.cs" />
+    <Compile Include="GenuineTcp\ConnectionEstablishingClosure.cs" />
+    <Compile Include="GenuineTcp\GenuineTcpChannel.cs" />
+    <Compile Include="GenuineTcp\IAcceptConnectionConsumer.cs" />
+    <Compile Include="GenuineTcp\SyncMessageSlot.cs" />
+    <Compile Include="GenuineTcp\SyncSocketReadingStream.cs" />
+    <Compile Include="GenuineTcp\SyncSocketStream.cs" />
+    <Compile Include="GenuineTcp\SyncSocketWritingStream.cs" />
+    <Compile Include="GenuineTcp\TcpConnectionManager.cs" />
+    <Compile Include="GenuineTcp\TcpInvocationFiniteAutomatonState.cs" />
+    <Compile Include="GenuineTcp\TcpSocketInfo.cs" />
+    <Compile Include="GenuineUdp\GenuineUdpChannel.cs" />
+    <Compile Include="GenuineUdp\IPMulticastSender.cs" />
+    <Compile Include="GenuineUdp\StreamAssembled.cs" />
+    <Compile Include="GenuineUdp\UdpConnectionManager.cs" />
+    <Compile Include="GenuineUtility.cs" />
+    <Compile Include="GenuineXHttp\GenuineXHttpChannel.cs" />
+    <Compile Include="GenuineXHttp\GXHTTPHeaderParser.cs" />
+    <Compile Include="GenuineXHttp\XHttpConnection.cs" />
+    <Compile Include="GenuineXHttp\XHttpConnectionManager.cs" />
+    <Compile Include="GenuineXHttp\XHttpPhysicalConnection.cs" />
+    <Compile Include="IGenuineExceptionLocalizer.cs" />
+    <Compile Include="Logbook\BinaryLogWriter.cs" />
+    <Compile Include="Logbook\BinaryRecordVersion.cs" />
+    <Compile Include="Logbook\FileWritingStream.cs" />
+    <Compile Include="Logbook\GenuineLoggingServices.cs" />
+    <Compile Include="Logbook\IEventLogger.cs" />
+    <Compile Include="Logbook\LogCategory.cs" />
+    <Compile Include="Logbook\LogMessageType.cs" />
+    <Compile Include="Logbook\MemoryWritingStream.cs" />
+    <Compile Include="Logbook\RemoteLogService.cs" />
+    <Compile Include="Messaging\DelimiterStream.cs" />
+    <Compile Include="Messaging\GenuineChunkedStream.cs" />
+    <Compile Include="Messaging\GenuineChunkedStreamSizeLabel.cs" />
+    <Compile Include="Messaging\GenuineMessageType.cs" />
+    <Compile Include="Messaging\LabelledStream.cs" />
+    <Compile Include="Messaging\Message.cs" />
+    <Compile Include="Messaging\MessageCoder.cs" />
+    <Compile Include="Messaging\MessageContainer.cs" />
+    <Compile Include="Messaging\MessageList.cs" />
+    <Compile Include="Messaging\NonClosableStream.cs" />
+    <Compile Include="OperationErrorMessage.cs" />
+    <Compile Include="OperationException.cs" />
+    <Compile Include="Parameters\DefaultParameterProvider.cs" />
+    <Compile Include="Parameters\GenuineParameter.cs" />
+    <Compile Include="Parameters\IParameterProvider.cs" />
+    <Compile Include="Parameters\ReadingCascadeParameterProvider.cs" />
+    <Compile Include="ReaderAutoLocker.cs" />
+    <Compile Include="Receiving\GenuineReceivingHandler.cs" />
+    <Compile Include="Receiving\IIncomingStreamHandler.cs" />
+    <Compile Include="Receiving\IMessageRegistrator.cs" />
+    <Compile Include="Receiving\IResponseProcessor.cs" />
+    <Compile Include="Receiving\ITransportUser.cs" />
+    <Compile Include="Receiving\MessageRegistratorWithLimitedQuantity.cs" />
+    <Compile Include="Receiving\MessageRegistratorWithLimitedTime.cs" />
+    <Compile Include="Security\FinishReadingStream.cs" />
+    <Compile Include="Security\IKeyProvider.cs" />
+    <Compile Include="Security\IKeyStore.cs" />
+    <Compile Include="Security\ISetSecuritySession.cs" />
+    <Compile Include="Security\KeyProvider_Basic.cs" />
+    <Compile Include="Security\KeyProvider_KnownSymmetric.cs" />
+    <Compile Include="Security\KeyProvider_SelfEstablishingSymmetric.cs" />
+    <Compile Include="Security\KeyStore.cs" />
+    <Compile Include="Security\ResettableCryptoStream.cs" />
+    <Compile Include="Security\RSAUtility.cs" />
+    <Compile Include="Security\SecurityContextKeeper.cs" />
+    <Compile Include="Security\SecuritySession.cs" />
+    <Compile Include="Security\SecuritySession_Basic.cs" />
+    <Compile Include="Security\SecuritySession_KnownSymmetric.cs" />
+    <Compile Include="Security\SecuritySession_SelfEstablishingSymmetric.cs" />
+    <Compile Include="Security\SecuritySessionParameters.cs" />
+    <Compile Include="Security\SecuritySessionServices.cs" />
+    <Compile Include="Security\SSPI\KeyProvider_SspiClient.cs" />
+    <Compile Include="Security\SSPI\KeyProvider_SspiServer.cs" />
+    <Compile Include="Security\SSPI\SecuritySession_SspiClient.cs" />
+    <Compile Include="Security\SSPI\SecuritySession_SspiServer.cs" />
+    <Compile Include="Security\SSPI\SspiApi.cs" />
+    <Compile Include="Security\SSPI\SspiClientSecurityContext.cs" />
+    <Compile Include="Security\SSPI\SspiFeatureFlags.cs" />
+    <Compile Include="Security\SSPI\SspiPacketStatusFlags.cs" />
+    <Compile Include="Security\SSPI\SspiSecurityContext.cs" />
+    <Compile Include="Security\SSPI\SspiServerSecurityContext.cs" />
+    <Compile Include="Security\SSPI\SupportedSspiPackages.cs" />
+    <Compile Include="Security\ZeroProofAuthorization\IAuthorizationManager.cs" />
+    <Compile Include="Security\ZeroProofAuthorization\KeyProvider_ZpaClient.cs" />
+    <Compile Include="Security\ZeroProofAuthorization\KeyProvider_ZpaServer.cs" />
+    <Compile Include="Security\ZeroProofAuthorization\SecuritySession_BaseZpaSession.cs" />
+    <Compile Include="Security\ZeroProofAuthorization\SecuritySession_ZpaClient.cs" />
+    <Compile Include="Security\ZeroProofAuthorization\SecuritySession_ZpaServer.cs" />
+    <Compile Include="Security\ZeroProofAuthorization\ZeroProofAuthorizationUtility.cs" />
+    <Compile Include="Security\ZeroProofAuthorization\ZpaFeatureFlags.cs" />
+    <Compile Include="Security\ZeroProofAuthorization\ZpaPacketStatusFlag.cs" />
+    <Compile Include="TransportContext\GenuineEventProvider.cs" />
+    <Compile Include="TransportContext\HostInformation.cs" />
+    <Compile Include="TransportContext\IGenuineEventHandler.cs" />
+    <Compile Include="TransportContext\IGenuineEventProvider.cs" />
+    <Compile Include="TransportContext\ITransportContext.cs" />
+    <Compile Include="TransportContext\ITransportContextProvider.cs" />
+    <Compile Include="TransportContext\KnownHosts.cs" />
+    <Compile Include="TransportContext\TransportContext.cs" />
+    <Compile Include="TransportContext\TransportContextServices.cs" />
+    <Compile Include="TransportContext\UriStorage.cs" />
+    <Compile Include="Utilities\AsyncThreadStarter.cs" />
+    <Compile Include="Utilities\CollectionUtility.cs" />
+    <Compile Include="Utilities\CustomThreadInfo.cs" />
+    <Compile Include="Utilities\EventPool.cs" />
+    <Compile Include="Utilities\GenuineThreadPool.cs" />
+    <Compile Include="Utilities\GenuineThreadPoolStrategy.cs" />
+    <Compile Include="Utilities\GenuineThreadPoolWorkItem.cs" />
+    <Compile Include="Utilities\IAsyncWorkItem.cs" />
+    <Compile Include="Utilities\ITimerConsumer.cs" />
+    <Compile Include="Utilities\OccupiedThreadSlots.cs" />
+    <Compile Include="Utilities\SocketUtility.cs" />
+    <Compile Include="Utilities\ThreadDataSlotKeeper.cs" />
+    <Compile Include="Utilities\TimerProvider.cs" />
+    <Compile Include="WriterAutoLocker.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

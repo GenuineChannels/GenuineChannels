@@ -1,7 +1,7 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
@@ -262,10 +262,10 @@ namespace Belikov.GenuineChannels.GenuineTcp
 				// LOG:
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.LowLevelTransport] > 0 )
 					binaryLogWriter.WriteTransportContentEvent(LogCategory.LowLevelTransport, "SyncSocketReadingStream.ReadFromSocket",
-						LogMessageType.LowLevelTransport_SyncReceivingCompleted, null, null, this._tcpSocketInfo.Remote, 
-						binaryLogWriter[LogCategory.LowLevelTransport] > 1 ? new MemoryStream(buffer, offset, bytesReceived) : null, 
+						LogMessageType.LowLevelTransport_SyncReceivingCompleted, null, null, this._tcpSocketInfo.Remote,
+						binaryLogWriter[LogCategory.LowLevelTransport] > 1 ? new MemoryStream(buffer, offset, bytesReceived) : null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
-						this._tcpSocketInfo.DbgConnectionId, bytesReceived, 
+						this._tcpSocketInfo.DbgConnectionId, bytesReceived,
 						this._tcpSocketInfo.Socket.RemoteEndPoint.ToString(), null, null,
 						"Socket.Receive(). Bytes received: {0}.", bytesReceived);
 
@@ -277,7 +277,7 @@ namespace Belikov.GenuineChannels.GenuineTcp
 				// LOG:
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.LowLevelTransport] > 0 )
 					binaryLogWriter.WriteEvent(LogCategory.LowLevelTransport, "SyncSocketReadingStream.ReadFromSocket",
-						LogMessageType.LowLevelTransport_SyncReceivingCompleted, ex, null, this._tcpSocketInfo.Remote, null, 
+						LogMessageType.LowLevelTransport_SyncReceivingCompleted, ex, null, this._tcpSocketInfo.Remote, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						null, null, this._tcpSocketInfo.DbgConnectionId, 0, 0, 0, null, null, null, null,
 						"Socket.Receive() failed.");
@@ -289,7 +289,7 @@ namespace Belikov.GenuineChannels.GenuineTcp
 		/// <summary>
 		/// Skips the remaining part of the message.
 		/// </summary>
-		public void Dispose()
+		public new void Dispose()
 		{
 			this.Close();
 		}
@@ -349,7 +349,7 @@ namespace Belikov.GenuineChannels.GenuineTcp
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports reading.
 		/// </summary>
-		public override bool CanRead 
+		public override bool CanRead
 		{
 			get
 			{
@@ -360,7 +360,7 @@ namespace Belikov.GenuineChannels.GenuineTcp
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports seeking.
 		/// </summary>
-		public override bool CanSeek 
+		public override bool CanSeek
 		{
 			get
 			{
@@ -371,7 +371,7 @@ namespace Belikov.GenuineChannels.GenuineTcp
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports writing.
 		/// </summary>
-		public override bool CanWrite 
+		public override bool CanWrite
 		{
 			get
 			{
@@ -382,7 +382,7 @@ namespace Belikov.GenuineChannels.GenuineTcp
 		/// <summary>
 		/// Gets the length in bytes of the stream.
 		/// </summary>
-		public override long Length 
+		public override long Length
 		{
 			get
 			{
@@ -394,7 +394,7 @@ namespace Belikov.GenuineChannels.GenuineTcp
 		/// Gets or sets the position within the current stream.
 		/// Always fires NotSupportedException exception.
 		/// </summary>
-		public override long Position 
+		public override long Position
 		{
 			get
 			{

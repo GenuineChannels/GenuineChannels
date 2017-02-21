@@ -1,13 +1,14 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Microsoft.Win32.SafeHandles;
 
 using Belikov.GenuineChannels.Parameters;
 
@@ -25,7 +26,7 @@ namespace Belikov.GenuineChannels.GenuineSharedMemory
 		private NamedEvent(IntPtr handle)
 		{
 			this._manualResetEvent = new ManualResetEvent(false);
-			this._manualResetEvent.Handle = handle;
+			this._manualResetEvent.SafeWaitHandle = new SafeWaitHandle(handle, true);
 		}
 
 		/// <summary>
@@ -40,8 +41,8 @@ namespace Belikov.GenuineChannels.GenuineSharedMemory
 			if (WindowsAPI.FailureReason != null)
 				throw OperationException.WrapException(WindowsAPI.FailureReason);
 
-			IntPtr handler = WindowsAPI.CreateEvent(WindowsAPI.AttributesWithNullDACL, 
-				manualReset ? 1 : 0, 
+			IntPtr handler = WindowsAPI.CreateEvent(WindowsAPI.AttributesWithNullDACL,
+				manualReset ? 1 : 0,
 				(initialState ? 1 : 0), name);
 			if (handler == IntPtr.Zero)
 				throw GenuineExceptions.Get_Windows_CanNotCreateOrOpenNamedEvent(Marshal.GetLastWin32Error());

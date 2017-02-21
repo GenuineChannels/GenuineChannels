@@ -1,7 +1,7 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
@@ -16,7 +16,7 @@ using Belikov.GenuineChannels.BufferPooling;
 namespace Belikov.GenuineChannels.Messaging
 {
 	/// <summary>
-	/// GenuineChunkedStream uses chunks from Buffer Pool and allows adding chunks and streams 
+	/// GenuineChunkedStream uses chunks from Buffer Pool and allows adding chunks and streams
 	/// directly, without additional copying.
 	/// </summary>
 	public class GenuineChunkedStream : Stream, ICloneable, IDisposable
@@ -86,7 +86,7 @@ namespace Belikov.GenuineChannels.Messaging
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports reading.
 		/// </summary>
-		public override bool CanRead 
+		public override bool CanRead
 		{
 			get
 			{
@@ -97,7 +97,7 @@ namespace Belikov.GenuineChannels.Messaging
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports seeking.
 		/// </summary>
-		public override bool CanSeek 
+		public override bool CanSeek
 		{
 			get
 			{
@@ -108,7 +108,7 @@ namespace Belikov.GenuineChannels.Messaging
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports writing.
 		/// </summary>
-		public override bool CanWrite 
+		public override bool CanWrite
 		{
 			get
 			{
@@ -119,7 +119,7 @@ namespace Belikov.GenuineChannels.Messaging
 		/// <summary>
 		/// Gets the length in bytes of the stream.
 		/// </summary>
-		public override long Length 
+		public override long Length
 		{
 			get
 			{
@@ -133,7 +133,7 @@ namespace Belikov.GenuineChannels.Messaging
 		/// Gets or sets the position within the current stream.
 		/// Always fires NotSupportedException exception.
 		/// </summary>
-		public override long Position 
+		public override long Position
 		{
 			get
 			{
@@ -551,7 +551,7 @@ namespace Belikov.GenuineChannels.Messaging
 			}
 			else
 				this._length = -1;
-			
+
 			this._currentWriteBlock = null;
 			this._writePosition = 0;
 
@@ -613,7 +613,7 @@ namespace Belikov.GenuineChannels.Messaging
 		/// <summary>
 		/// Returns all chunks back to the buffer pool.
 		/// </summary>
-		public void Dispose()
+		public new void Dispose()
 		{
 			this.Close();
 		}

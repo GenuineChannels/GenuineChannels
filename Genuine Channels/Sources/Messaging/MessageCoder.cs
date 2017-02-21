@@ -1,7 +1,7 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
@@ -9,14 +9,13 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
-
-using ICSharpCode.SharpZipLib.GZip;
 
 using Belikov.GenuineChannels.Connection;
 using Belikov.GenuineChannels.Messaging;
@@ -91,7 +90,7 @@ namespace Belikov.GenuineChannels.Messaging
 			foreach (DictionaryEntry entry in message.ITransportHeaders)
 			{
 				string key = entry.Key as string;
-				if (key == null || key == "__" || key == Message.TransportHeadersBroadcastObjRefOrCourt 
+				if (key == null || key == "__" || key == Message.TransportHeadersBroadcastObjRefOrCourt
 					|| entry.Value == null || key == Message.TransportHeadersGenuineMessageType)
 					continue;
 
@@ -111,9 +110,9 @@ namespace Belikov.GenuineChannels.Messaging
 			// compress the content
 			if (compress)
 			{
-				GZipOutputStream compressingStream = new GZipOutputStream(new NonClosableStream(stream));
+				var compressingStream = new GZipStream(new NonClosableStream(stream), CompressionMode.Compress, leaveOpen: true);
 				GenuineUtility.CopyStreamToStream(usedStream, compressingStream);
-				compressingStream.Finish();
+				compressingStream.Close();
 			}
 		}
 
@@ -131,7 +130,7 @@ namespace Belikov.GenuineChannels.Messaging
 
 			// decompress the stream
 			if (contentWasCompressed)
-				stream = new GZipInputStream(stream);
+				stream = new GZipStream(stream, CompressionMode.Decompress, leaveOpen: false);
 
 			binaryReader = new BinaryReader(stream);
 			Message message = new Message();
