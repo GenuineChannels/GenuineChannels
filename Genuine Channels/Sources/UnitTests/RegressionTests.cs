@@ -25,21 +25,19 @@ namespace GenuineChannels.UnitTests
 			var objref = RemotingServices.Marshal(service, "Service");
 
 			// start client
-			var clientChannel = RegisterChannel();
-			var proxy = (IService)Activator.GetObject(typeof(IService), "gtcp://localhost:8737/Service");
+			var proxy = (IService)Activator.GetObject(typeof(IService), "gtcp://127.0.0.1:8737/Service");
 			var greeting = proxy.Greeting("World");
 
 			// stop server
 			RemotingServices.Unmarshal(objref);
 			ChannelServices.UnregisterChannel(serverChannel);
-			ChannelServices.UnregisterChannel(clientChannel);
 		}
 
 		private static IChannel RegisterChannel(bool server = false)
 		{
 			var props = new Dictionary<string, string>
 			{
-				{ "name", "GTCP1" + Guid.NewGuid() },
+				{ "name", "GTCP1" },
 				{ "priority", "100" }
 			};
 
@@ -68,6 +66,5 @@ namespace GenuineChannels.UnitTests
 		{
 			string Greeting(string s);
 		}
-
 	}
 }
