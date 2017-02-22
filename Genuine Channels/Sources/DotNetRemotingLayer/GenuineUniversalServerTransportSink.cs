@@ -1,7 +1,7 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
@@ -64,7 +64,7 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 
 		private BasicChannelWithSecurity _channel;
 
-		#region IServerChannelSink 
+		#region IServerChannelSink
 
 		/// <summary>
 		/// Gets the next server channel sink in the server sink chain.
@@ -103,8 +103,8 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 				string methodName = BinaryLogWriter.ParseInvocationMethod(msg.Properties["__MethodName"] as string, msg.Properties["__TypeName"] as string);
 
 				binaryLogWriter.WriteMessageCreatedEvent("GenuineUniversalServerTransportSink.AsyncProcessResponse",
-					LogMessageType.MessageCreated, null, reply, false, reply.Recipient, 
-					this.ITransportContext.BinaryLogWriter[LogCategory.MessageProcessing] > 1 ? reply.Stream : null, 
+					LogMessageType.MessageCreated, null, reply, false, reply.Recipient,
+					this.ITransportContext.BinaryLogWriter[LogCategory.MessageProcessing] > 1 ? reply.Stream : null,
 					invocationTarget, methodName,
 					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, -1, -1, null, -1, null,
 					"The response message has been created.");
@@ -113,9 +113,9 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 				reply.ITransportHeaders[Message.TransportHeadersMethodName] = methodName;
 
 				binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineUniversalServerTransportSink.AsyncProcessResponse",
-					LogMessageType.MessageRequestInvoked, null, reply, message.Sender, 
+					LogMessageType.MessageRequestInvoked, null, reply, message.Sender,
 					null,
-					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 					null, null, -1, GenuineUtility.TickCount, 0, message.SeqNo, null, null, null, null,
 					"The .NET Remoting invocation has been performed.");
 			}
@@ -163,9 +163,9 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 		/// <summary>
 		/// Just to avoid compiler error.
 		/// </summary>
-		public System.Collections.IDictionary Properties 
+		public System.Collections.IDictionary Properties
 		{
-			get 
+			get
 			{
 				// not necessary
 				return null;
@@ -211,9 +211,9 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineUniversalServerTransportSink.HandleIncomingMessage",
-						LogMessageType.MessageRequestInvoking, null, message, message.Sender, 
+						LogMessageType.MessageRequestInvoking, null, message, message.Sender,
 						null,
-						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						null, null, -1, GenuineUtility.TickCount, 0, 0, null, null, null, null,
 						"The .NET Remoting request is being invoked.");
 				}
@@ -231,8 +231,8 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 							string invocationTarget = responseMsg.Properties["__Uri"] as string;
 							string methodName = BinaryLogWriter.ParseInvocationMethod(responseMsg.Properties["__MethodName"] as string, responseMsg.Properties["__TypeName"] as string);
 							binaryLogWriter.WriteMessageCreatedEvent("GenuineUniversalServerTransportSink.HandleIncomingMessage",
-								LogMessageType.MessageCreated, null, reply, false, reply.Recipient, 
-								this.ITransportContext.BinaryLogWriter[LogCategory.MessageProcessing] > 1 ? reply.Stream : null, 
+								LogMessageType.MessageCreated, null, reply, false, reply.Recipient,
+								binaryLogWriter[LogCategory.MessageProcessing] > 1 ? reply.Stream : null,
 								invocationTarget, methodName,
 								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, -1, -1, null, -1, null,
 								"The response message has been created.");
@@ -241,9 +241,9 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 							reply.ITransportHeaders[Message.TransportHeadersMethodName] = methodName;
 
 							binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineUniversalServerTransportSink.HandleIncomingMessage",
-								LogMessageType.MessageRequestInvoked, null, reply, message.Sender, 
+								LogMessageType.MessageRequestInvoked, null, reply, message.Sender,
 								null,
-								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 								null, null, -1, GenuineUtility.TickCount, 0, message.SeqNo, null, null, null, null,
 								"The .NET Remoting invocation has been performed.");
 						}
@@ -260,9 +260,9 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 						if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
 						{
 							binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineUniversalServerTransportSink.HandleIncomingMessage",
-								LogMessageType.MessageRequestInvoked, null, null, message.Sender, 
+								LogMessageType.MessageRequestInvoked, null, null, message.Sender,
 								null,
-								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 								null, null, -1, GenuineUtility.TickCount, 0, message.SeqNo, null, null, null, null,
 								"One-way .NET Remoting invocation has been performed. No response is available.");
 						}
@@ -278,9 +278,9 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 					if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
 					{
 						binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineUniversalServerTransportSink.HandleIncomingMessage",
-							LogMessageType.MessageRequestInvoking, ex, message, message.Sender, 
+							LogMessageType.MessageRequestInvoking, ex, message, message.Sender,
 							null,
-							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 							null, null, -1, 0, 0, 0, null, null, null, null,
 							"The .NET Remoting request resulted in exception. The exception is being sent back.");
 					}
@@ -302,9 +302,9 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 					if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
 					{
 						binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineUniversalServerTransportSink.HandleIncomingMessage",
-							LogMessageType.MessageRequestInvoking, internalEx, message, message.Sender, 
+							LogMessageType.MessageRequestInvoking, internalEx, message, message.Sender,
 							null,
-							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 							null, null, -1, 0, 0, 0, null, null, null, null,
 							"The source exception cannot be sent over the network. Both exceptions are ignored.");
 					}

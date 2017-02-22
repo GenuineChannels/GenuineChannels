@@ -56,9 +56,7 @@ namespace GenuineChannels.UnitTests
 			public string Greeting(string s)
 			{
 				Belikov.GenuineChannels.Logbook.GenuineLoggingServices.StopLogging();
-				var result = $"Hello, {s}!";
-				Console.WriteLine("Replying to client: {0}", result);
-				return result;
+				return $"Hello, {s}!";
 			}
 		}
 
