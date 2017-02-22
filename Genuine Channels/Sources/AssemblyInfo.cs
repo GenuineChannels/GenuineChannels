@@ -72,3 +72,7 @@ using System.Runtime.CompilerServices;
 //[assembly: AssemblyKeyName("")]
 
 [assembly: AllowPartiallyTrustedCallers]
+
+#if FRM40
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
+#endif

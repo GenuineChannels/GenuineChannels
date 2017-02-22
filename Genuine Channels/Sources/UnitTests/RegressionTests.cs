@@ -39,7 +39,7 @@ namespace GenuineChannels.UnitTests
 		{
 			var props = new Dictionary<string, string>
 			{
-				{ "name", "GTCP1" },
+				{ "name", "GTCP1" + Guid.NewGuid() },
 				{ "priority", "100" }
 			};
 
