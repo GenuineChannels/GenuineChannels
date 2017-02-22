@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenuineChannels.Desktop.v4.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenuineChannels.Desktop.v3.5", "GenuineChannels.Desktop.v3.5.csproj", "{002F15BE-46E6-47E9-8317-660A0D3CEA3E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenuineChannels.UnitTests", "GenuineChannels.UnitTests.csproj", "{E2704967-610D-47C5-9A30-73DB8F51394F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{002F15BE-46E6-47E9-8317-660A0D3CEA3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{002F15BE-46E6-47E9-8317-660A0D3CEA3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{002F15BE-46E6-47E9-8317-660A0D3CEA3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2704967-610D-47C5-9A30-73DB8F51394F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2704967-610D-47C5-9A30-73DB8F51394F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2704967-610D-47C5-9A30-73DB8F51394F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2704967-610D-47C5-9A30-73DB8F51394F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

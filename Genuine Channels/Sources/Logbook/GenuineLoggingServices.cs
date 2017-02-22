@@ -1,12 +1,13 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
 using System;
 using System.Runtime.Remoting;
+using System.Security;
 
 namespace Belikov.GenuineChannels.Logbook
 {
@@ -122,6 +123,7 @@ namespace Belikov.GenuineChannels.Logbook
 		/// </summary>
 		/// <param name="maximumMemorySize">The maximum possible size of memory space occupied by log records.</param>
 		/// <param name="logOptions">The options specifying what information will be saved into the log.</param>
+		[SecuritySafeCritical]
 		public static void SetUpLoggingToMemory(int maximumMemorySize, string logOptions)
 		{
 			lock (_accessToLocalMembers)
@@ -155,7 +157,7 @@ namespace Belikov.GenuineChannels.Logbook
 		}
 
 		/// <summary>
-		/// Creates and starts a binary log writer putting records down to the specified file. The name 
+		/// Creates and starts a binary log writer putting records down to the specified file. The name
 		/// of the file will not be modified if addSuffixToBaseFileName is false.
 		/// </summary>
 		/// <param name="baseFileName">The basic part of the file name.</param>

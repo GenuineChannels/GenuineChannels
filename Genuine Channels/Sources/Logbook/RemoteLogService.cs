@@ -1,13 +1,13 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
 using System;
 using System.IO;
-
+using System.Security;
 using Belikov.GenuineChannels.DirectExchange;
 using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.TransportContext;
@@ -85,6 +85,7 @@ namespace Belikov.GenuineChannels.Logbook
 		/// regardless of the expired time.
 		/// </summary>
 		/// <returns>A null reference.</returns>
+		[SecurityCritical]
 		public override object InitializeLifetimeService()
 		{
 			return null;
