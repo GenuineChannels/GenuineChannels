@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/zyanfx/GenuineChannels/master/Nuget/GenuineChannelsLogo.png" width=1000 heigh=142>
+<img src="https://raw.githubusercontent.com/zyanfx/GenuineChannels/master/Nuget/GenuineChannelsLogo.png" width=100 heigh=100>
 
 # GenuineChannels
 Collection of custom .NET Remoting channels licensed under MIT license.
