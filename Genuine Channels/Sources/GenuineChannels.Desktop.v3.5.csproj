@@ -23,20 +23,22 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug35\</OutputPath>
+    <OutputPath>..\DLL\Framework 3.5\Debug\</OutputPath>
     <BaseIntermediateOutputPath>obj.fx35</BaseIntermediateOutputPath>
     <DefineConstants>TRACE;DEBUG;FRM20</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\DLL\Framework 3.5\Debug\GenuineChannels.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release35</OutputPath>
+    <OutputPath>..\DLL\Framework 3.5\Release\</OutputPath>
     <BaseIntermediateOutputPath>obj.fx35</BaseIntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\DLL\Framework 3.5\Release\GenuineChannels.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

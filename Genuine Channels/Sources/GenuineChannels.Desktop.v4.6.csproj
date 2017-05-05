@@ -22,22 +22,24 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug46\</OutputPath>
+    <OutputPath>..\DLL\Framework 4.6\Debug\</OutputPath>
     <BaseIntermediateOutputPath>obj.fx46</BaseIntermediateOutputPath>
     <DefineConstants>TRACE;DEBUG;FRM20;FRM40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>..\DLL\Framework 4.6\Debug\GenuineChannels.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release46\</OutputPath>
+    <OutputPath>..\DLL\Framework 4.6\Release\</OutputPath>
     <BaseIntermediateOutputPath>obj.fx46</BaseIntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>..\DLL\Framework 4.6\Release\GenuineChannels.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
