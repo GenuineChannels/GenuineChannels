@@ -38,3 +38,5 @@ _ReSharper*/
 *.csproj.user
 /Nuget/*.nupkg
 /Genuine Channels/GenuineChannelsReference.chw
+/Genuine Channels/GenuineLogViewer/DockPreferences*.xml
+/Genuine Channels/GenuineLogViewer/Preferences.xml
