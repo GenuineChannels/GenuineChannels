@@ -22,10 +22,10 @@ namespace GenuineChannels.UnitTests
 			// start server
 			var serverChannel = RegisterChannel(server: true);
 			var service = new Service();
-			var objref = RemotingServices.Marshal(service, "Service");
+			var objref = RemotingServices.Marshal(service, "RegressionTestService");
 
 			// start client
-			var proxy = (IService)Activator.GetObject(typeof(IService), "gtcp://127.0.0.1:8737/Service");
+			var proxy = (IService)Activator.GetObject(typeof(IService), "gtcp://127.0.0.1:8737/RegressionTestService");
 			var greeting = proxy.Greeting("World");
 
 			// stop server

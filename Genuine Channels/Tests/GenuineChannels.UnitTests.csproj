@@ -41,11 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UnitTests\GtcpTests.cs" />
     <Compile Include="UnitTests\RegressionTests.cs" />
     <Compile Include="UnitTests\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="GenuineChannels.Desktop.v4.6.csproj">
+    <ProjectReference Include="..\Sources\GenuineChannels.Desktop.v4.6.csproj">
       <Project>{14ffff11-dfbe-4f2f-a50e-381dd2ddb7c2}</Project>
       <Name>GenuineChannels.Desktop.v4.6</Name>
     </ProjectReference>
