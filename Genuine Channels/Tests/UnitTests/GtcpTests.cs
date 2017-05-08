@@ -23,6 +23,9 @@ namespace GenuineChannels.UnitTests.UnitTests
 
 			var service = new Service();
 			ServiceObjRef = RemotingServices.Marshal(service, "GtcpTestService");
+
+			var serviceWithPostfix = new Service();
+			ServiceObjRef = RemotingServices.Marshal(serviceWithPostfix, "GtcpTestService.rem");
 		}
 
 		[ClassCleanup]
@@ -80,6 +83,16 @@ namespace GenuineChannels.UnitTests.UnitTests
 		}
 
 		[TestMethod]
+		public void RemoteInvocationWithPostfix()
+		{
+			// note: localhost url doesn't work because it resolves to IPv6 address
+			var proxy = (IService)Activator.GetObject(typeof(IService), "gtcp://127.0.0.1:8737/GtcpTestService.rem");
+			var greeting = proxy.Greeting("World");
+
+			Assert.AreEqual("Hello, World!", greeting);
+		}
+
+		[TestMethod]
 		public void RemoteInvocationWithCompression()
 		{
 			// test compression
@@ -90,6 +103,25 @@ namespace GenuineChannels.UnitTests.UnitTests
 
 			// note: localhost url doesn't work because it resolves to IPv6 address
 			var proxy = (IService)Activator.GetObject(typeof(IService), "gtcp://127.0.0.1:8737/GtcpTestService");
+
+			using (new SecurityContextKeeper(parameters))
+			{
+				var greeting = proxy.Greeting("Compressed World");
+				Assert.AreEqual("Hello, Compressed World!", greeting);
+			}
+		}
+
+		[TestMethod]
+		public void RemoteInvocationWithCompressionAndPostfix()
+		{
+			// test compression
+			var parameters = new SecuritySessionParameters(
+				SecuritySessionServices.DefaultContext.Name,
+				SecuritySessionAttributes.EnableCompression,
+				TimeSpan.FromSeconds(5));
+
+			// note: localhost url doesn't work because it resolves to IPv6 address
+			var proxy = (IService)Activator.GetObject(typeof(IService), "gtcp://127.0.0.1:8737/GtcpTestService.rem");
 
 			using (new SecurityContextKeeper(parameters))
 			{
