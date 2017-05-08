@@ -5,7 +5,10 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
+using Belikov.GenuineChannels;
+using Belikov.GenuineChannels.Connection;
 using Belikov.GenuineChannels.GenuineTcp;
+using Belikov.GenuineChannels.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GenuineChannels.UnitTests.UnitTests
@@ -74,6 +77,25 @@ namespace GenuineChannels.UnitTests.UnitTests
 			var greeting = proxy.Greeting("World");
 
 			Assert.AreEqual("Hello, World!", greeting);
+		}
+
+		[TestMethod]
+		public void RemoteInvocationWithCompression()
+		{
+			// test compression
+			var parameters = new SecuritySessionParameters(
+				SecuritySessionServices.DefaultContext.Name,
+				SecuritySessionAttributes.EnableCompression,
+				TimeSpan.FromSeconds(5));
+
+			// note: localhost url doesn't work because it resolves to IPv6 address
+			var proxy = (IService)Activator.GetObject(typeof(IService), "gtcp://127.0.0.1:8737/GtcpTestService");
+
+			using (new SecurityContextKeeper(parameters))
+			{
+				var greeting = proxy.Greeting("Compressed World");
+				Assert.AreEqual("Hello, Compressed World!", greeting);
+			}
 		}
 	}
 }
