@@ -25,19 +25,22 @@ namespace GenuineChannels.UnitTests.UnitTests
 			ServiceObjRef = RemotingServices.Marshal(service, "GtcpTestService");
 
 			var serviceWithPostfix = new Service();
-			ServiceObjRef = RemotingServices.Marshal(serviceWithPostfix, "GtcpTestService.rem");
+			ServiceWithPostfixObjRef = RemotingServices.Marshal(serviceWithPostfix, "GtcpTestService.rem");
 		}
 
 		[ClassCleanup]
 		public static void StopServer()
 		{
 			RemotingServices.Unmarshal(ServiceObjRef);
+			RemotingServices.Unmarshal(ServiceWithPostfixObjRef);
 			ChannelServices.UnregisterChannel(ServerChannel);
 		}
 
 		public static IChannel ServerChannel { get; set; }
 
 		public static ObjRef ServiceObjRef { get; set; }
+
+		public static ObjRef ServiceWithPostfixObjRef { get; set; }
 
 		private static IChannel RegisterChannel(bool server = false)
 		{

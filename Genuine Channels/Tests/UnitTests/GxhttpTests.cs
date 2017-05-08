@@ -23,19 +23,25 @@ namespace GenuineChannels.UnitTests.UnitTests
 			ServerChannel = RegisterChannel(server: true);
 
 			var service = new Service();
-			ServiceObjRef = RemotingServices.Marshal(service, "GxttpTestService.rem");
+			ServiceObjRef = RemotingServices.Marshal(service, "GxttpTestService");
+
+			var serviceWithPostfix = new Service();
+			ServiceWithPostfixObjRef = RemotingServices.Marshal(serviceWithPostfix, "GxttpTestService.rem");
 		}
 
 		[ClassCleanup]
 		public static void StopServer()
 		{
 			RemotingServices.Unmarshal(ServiceObjRef);
+			RemotingServices.Unmarshal(ServiceWithPostfixObjRef);
 			ChannelServices.UnregisterChannel(ServerChannel);
 		}
 
 		public static IChannel ServerChannel { get; set; }
 
 		public static ObjRef ServiceObjRef { get; set; }
+
+		public static ObjRef ServiceWithPostfixObjRef { get; set; }
 
 		private static IChannel RegisterChannel(bool server = false)
 		{
@@ -74,14 +80,43 @@ namespace GenuineChannels.UnitTests.UnitTests
 		public void RemoteInvocation()
 		{
 			// note: localhost url doesn't work because it resolves to IPv6 address
-			var proxy = (IService)Activator.GetObject(typeof(IService), "ghttp://127.0.0.1:8739/GxttpTestService.rem");
+			var proxy = (IService)Activator.GetObject(typeof(IService), "ghttp://127.0.0.1:8739/GxttpTestService");
 			var greeting = proxy.Greeting("World");
 
 			Assert.AreEqual("Goodbye, World!", greeting);
 		}
 
 		[TestMethod]
+		public void RemoteInvocationWithPostfix()
+		{
+			// note: localhost url doesn't work because it resolves to IPv6 address
+			var proxy = (IService)Activator.GetObject(typeof(IService), "ghttp://127.0.0.1:8739/GxttpTestService.rem");
+			var greeting = proxy.Greeting("World");
+
+			Assert.AreEqual("Goodbye, World!", greeting);
+		}
+
+		[TestMethod, Ignore] // GenuineTcpClientTransportSink throws an exception while it shouldn't take part in the xhttp sink chain
 		public void RemoteInvocationWithCompression()
+		{
+			// test compression
+			var parameters = new SecuritySessionParameters(
+				SecuritySessionServices.DefaultContext.Name,
+				SecuritySessionAttributes.EnableCompression,
+				TimeSpan.FromSeconds(5));
+
+			// note: localhost url doesn't work because it resolves to IPv6 address
+			var proxy = (IService)Activator.GetObject(typeof(IService), "ghttp://127.0.0.1:8739/GxttpTestService");
+
+			using (new SecurityContextKeeper(parameters))
+			{
+				var greeting = proxy.Greeting("Compressed World");
+				Assert.AreEqual("Goodbye, Compressed World!", greeting);
+			}
+		}
+
+		[TestMethod]
+		public void RemoteInvocationWithCompressionAndPostfix()
 		{
 			// test compression
 			var parameters = new SecuritySessionParameters(

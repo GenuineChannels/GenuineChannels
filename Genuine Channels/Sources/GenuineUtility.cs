@@ -53,8 +53,11 @@ namespace Belikov.GenuineChannels
 				int pos = url.LastIndexOf('/');
 				if (pos > 0)
 					objectURI = url.Substring(pos + 1);
+				var postfix = string.Empty;
 				int postfixPos = objectURI.LastIndexOf('.');
-				return url.Substring(0, pos+1) + "fake" + objectURI.Substring(postfixPos);
+				if (postfixPos >= 0)
+					postfix = objectURI.Substring(postfixPos);
+				return url.Substring(0, pos+1) + "fake" + postfix;
 			}
 
 			// look for _?g.+://
