@@ -1,3 +1,6 @@
+# Ignore Sample2/server/packages folder 
+Genuine\ Channels/Sample2/Server/packages
+
 # Ignore thumbnails created by windows
 Thumbs.db
 
