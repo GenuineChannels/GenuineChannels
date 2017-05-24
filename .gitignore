@@ -40,6 +40,7 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 *.csproj.user
 /Nuget/*.nupkg
-/Genuine Channels/GenuineChannelsReference.chw
 /Genuine Channels/GenuineLogViewer/DockPreferences*.xml
 /Genuine Channels/GenuineLogViewer/Preferences.xml
+/Genuine Channels/Sample2/.vs
+/Genuine Channels/Sample2/packages/*

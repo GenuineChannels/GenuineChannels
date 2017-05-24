@@ -33,12 +33,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GenuineChannels, Version=2.5.9.9, Culture=neutral, PublicKeyToken=65fda4a3fde44959">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\GenuineChannels.dll</HintPath>
+    <Reference Include="GenuineChannels, Version=2.5.9.9, Culture=neutral, PublicKeyToken=65fda4a3fde44959, processorArchitecture=MSIL">
+      <HintPath>..\packages\GenuineChannels.2.5.9.9\lib\net20\GenuineChannels.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="KnownObjects">
-      <HintPath>..\..\KnownObjects\KnownObjects\bin\Debug\KnownObjects.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\GenuineChannels.2.5.9.9\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,6 +56,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KnownObjects\KnownObjects.csproj">
+      <Project>{9c1b4b24-9293-41df-873f-7f95720737b5}</Project>
+      <Name>KnownObjects</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
