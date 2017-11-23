@@ -1,0 +1,5 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+build:
+  project: Genuine Channels\GenuineChannels.Desktop.sln
+  verbosity: minimal
