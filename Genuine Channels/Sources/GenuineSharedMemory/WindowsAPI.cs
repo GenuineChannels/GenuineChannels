@@ -1,13 +1,14 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Microsoft.Win32.SafeHandles;
 
 namespace Belikov.GenuineChannels.GenuineSharedMemory
 {
@@ -238,7 +239,7 @@ namespace Belikov.GenuineChannels.GenuineSharedMemory
 				throw GenuineExceptions.Get_Windows_SharedMemoryError(Marshal.GetLastWin32Error());
 
 			Mutex mutex = new Mutex();
-			mutex.Handle = result;
+			mutex.SafeWaitHandle = new SafeWaitHandle(result, true);
 
 			return mutex;
 		}
@@ -253,7 +254,7 @@ namespace Belikov.GenuineChannels.GenuineSharedMemory
 				throw GenuineExceptions.Get_Windows_SharedMemoryError(Marshal.GetLastWin32Error());
 
 			Mutex mutex = new Mutex();
-			mutex.Handle = result;
+			mutex.SafeWaitHandle = new SafeWaitHandle(result, true);
 
 			return mutex;
 		}

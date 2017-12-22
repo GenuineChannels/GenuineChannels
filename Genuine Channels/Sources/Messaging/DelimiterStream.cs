@@ -1,7 +1,7 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
@@ -36,7 +36,7 @@ namespace Belikov.GenuineChannels.Messaging
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports reading.
 		/// </summary>
-		public override bool CanRead 
+		public override bool CanRead
 		{
 			get
 			{
@@ -47,7 +47,7 @@ namespace Belikov.GenuineChannels.Messaging
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports seeking.
 		/// </summary>
-		public override bool CanSeek 
+		public override bool CanSeek
 		{
 			get
 			{
@@ -58,7 +58,7 @@ namespace Belikov.GenuineChannels.Messaging
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports writing.
 		/// </summary>
-		public override bool CanWrite 
+		public override bool CanWrite
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Belikov.GenuineChannels.Messaging
 		/// <summary>
 		/// Gets the length in bytes of the stream.
 		/// </summary>
-		public override long Length 
+		public override long Length
 		{
 			get
 			{
@@ -81,7 +81,7 @@ namespace Belikov.GenuineChannels.Messaging
 		/// Gets or sets the position within the current stream.
 		/// Always fires NotSupportedException exception.
 		/// </summary>
-		public override long Position 
+		public override long Position
 		{
 			get
 			{
@@ -96,7 +96,7 @@ namespace Belikov.GenuineChannels.Messaging
 		/// <summary>
 		/// Completes reading from the underlying stream.
 		/// </summary>
-		public void Dispose()
+		public new void Dispose()
 		{
 			this.Close();
 		}

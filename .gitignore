@@ -1,0 +1,46 @@
+# Ignore Sample2/server/packages folder 
+Genuine\ Channels/Sample2/Server/packages
+
+# Ignore thumbnails created by windows
+Thumbs.db
+
+# Ignore files by macos
+.DS_Store
+
+# Ignore files built by Visual Studio
+*.obj
+*.exe
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+[Bb]in
+[Dd]ebug*/
+*.lib
+*.sbr
+*.pidb
+*.cache
+*.userprefs
+*.sdf
+*.xap
+obj/
+[Rr]elease*/
+_ReSharper*/
+[Tt]est[Rr]esult*
+*.csproj.user
+/Nuget/*.nupkg
+/Genuine Channels/GenuineLogViewer/DockPreferences*.xml
+/Genuine Channels/GenuineLogViewer/Preferences.xml
+/Genuine Channels/Sample2/.vs
+/Genuine Channels/Sample2/packages/*
