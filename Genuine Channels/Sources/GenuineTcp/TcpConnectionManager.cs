@@ -2327,8 +2327,14 @@ namespace Belikov.GenuineChannels.GenuineTcp
 
 			IPEndPoint ipEndPoint = new IPEndPoint(GenuineUtility.ResolveIPAddress(interfaceAddress), port);
 
+			// Prepare dual-mode (IPv4 & IPv6) for the socket listener (Vista and Longhorn above only).
+			// Idea based on http://blogs.msdn.com/wndp/archive/2006/10/24/creating-ip-agnostic-applications-part-2-dual-mode-sockets.aspx
+			AddressFamily addressFamily = ipEndPoint.AddressFamily;
+			if (addressFamily == AddressFamily.InterNetwork && GenuineUtility.LocalSystemSupportsIPv6)
+				addressFamily = AddressFamily.InterNetworkV6;
+
 			// start socket listening
-			Socket socket = new Socket(ipEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+			Socket socket = new Socket(addressFamily, SocketType.Stream, ProtocolType.Tcp);
 
 			try
 			{
@@ -2336,6 +2342,27 @@ namespace Belikov.GenuineChannels.GenuineTcp
 				LingerOption lingerOption = new LingerOption(true, 3);
 				socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, lingerOption);
 
+				// setup port sharing: share the port (other apps can use the same one):
+				//TODO: discuss, if this should be an properties entry controlled behavior?
+				//socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
+
+				// setup dual listener mode, if IPv6 and IPv4 running at the same time.
+				if (addressFamily == AddressFamily.InterNetworkV6 && GenuineUtility.LocalSystemSupportsIPv6)
+				{
+					// Set dual-mode (IPv4 & IPv6) for the socket listener (Vista and Longhorn above only).
+					// 27 is equivalent to IPV6_V6ONLY socket option in the winsock snippet below,
+					// based on http://blogs.msdn.com/wndp/archive/2006/10/24/creating-ip-agnostic-applications-part-2-dual-mode-sockets.aspx
+					socket.SetSocketOption(SocketOptionLevel.IPv6, (SocketOptionName) 27, 0);
+
+					if (!GenuineUtility.IsIPv4MappedToIPv6(ipEndPoint.Address))
+					{
+						if (Equals(ipEndPoint.Address, IPAddress.Any))
+							ipEndPoint = new IPEndPoint(IPAddress.IPv6Any, port);
+						else
+							ipEndPoint = new IPEndPoint(GenuineUtility.MapToIPv6(ipEndPoint.Address), port);
+					}
+				}
+				
 				socket.Bind(ipEndPoint);
 				socket.Listen(15);
 

@@ -8,6 +8,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -139,21 +140,79 @@ namespace Belikov.GenuineChannels
 		/// Splits the given url to a host name and a port.
 		/// </summary>
 		/// <param name="url">The url to be splitted.</param>
-		/// <param name="port">The fetched port.</param>
-		/// <returns>The uri.</returns>
+		/// <param name="port">Out parameter. The fetched port.</param>
+		/// <returns>The host name.</returns>
 		public static string SplitToHostAndPort(string url, out int port)
 		{
 			port = 0;
 
-			Match match = _splitUrlToHostAndPort.Match(url);
-			if (! match.Success)
+			Match match = _UrlToHost.Match(url);
+			if (!match.Success)
 				return null;
 
-			port = Convert.ToInt32(match.Groups["port"].Value);
-			return match.Groups["hostName"].Value;
+			url = match.Groups["hostName"].Value;	// may include: port; but stripped scheme etc.
+			int slashIndex = url.IndexOf('/');		// strip postfix chars
+			if (slashIndex >= 0)
+				url = url.Substring(0, slashIndex);
+
+			int firstColonIndex = url.IndexOf(':');
+			
+			if (firstColonIndex < 0)
+				return url; // no port at all
+
+			int lastColonIndex = url.LastIndexOf(':');
+			var isIpv6 = firstColonIndex < lastColonIndex;
+
+			var namePart = url.Substring(0, lastColonIndex);
+			var portPart = url.Substring(lastColonIndex + 1);
+
+			if (isIpv6)
+			{
+				var name2Check = namePart;
+
+				// see https://en.wikipedia.org/wiki/IPv6_address#Literal_IPv6_addresses_in_network_resource_identifiers
+				var scopedLiteralAddressIndex = name2Check.IndexOf('%');
+				if (scopedLiteralAddressIndex > 0)	// strip scope(s), not included in regex used
+					name2Check = name2Check.Substring(0, scopedLiteralAddressIndex);
+
+				if (!string.IsNullOrEmpty(portPart))
+				{
+					scopedLiteralAddressIndex = portPart.IndexOf('%');
+					if (scopedLiteralAddressIndex >= 0)
+					{	// port is not port, it is part of the address:
+						name2Check += ":" + portPart.Substring(0, scopedLiteralAddressIndex);
+						portPart = null;
+						namePart = url;
+					}
+				}
+
+				match = _Ipv6Address.Match(name2Check);	
+				if (!match.Success && !string.IsNullOrEmpty(portPart))
+				{
+					//  append stripped port for check  (here port without scope(s))
+					name2Check += ":" + portPart;
+
+					match = _Ipv6Address.Match(name2Check); 
+					if (!match.Success)
+						return null;
+					// the port is not a port: it is part of the IPv6 address
+					portPart = null;
+					namePart = url;
+				}
+			}
+
+			if (!string.IsNullOrEmpty(portPart))	// convert
+				port = Convert.ToInt32(portPart);
+
+			return namePart;
 		}
-		private static Regex _splitUrlToHostAndPort = new Regex(@"^g\w+://(?<hostName>[^:]+):(?<port>\d+)",
+		private static readonly Regex _UrlToHost = new Regex(@"^g\w+://(?<hostName>.*)",
 			RegexOptions.IgnoreCase | RegexOptions.Compiled);
+		// see: https://regex101.com/r/cT0hV4/5
+		private static readonly Regex _Ipv6Address = new Regex(@"(?:^|(?<=\s))(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(?=\s|$)",
+			RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+		
 
 		/// <summary>
 		/// Splits the given url to a host name and a port.
@@ -163,6 +222,7 @@ namespace Belikov.GenuineChannels
 		/// <returns>The uri.</returns>
 		public static string SplitHttpLinkToHostAndPort(string url, out int port)
 		{
+			//TODO: rework for IPv6
 			port = 80;
 
 			Match match = _splitHttpLinkToHostAndPort.Match(url);
@@ -176,6 +236,102 @@ namespace Belikov.GenuineChannels
 		private static Regex _splitHttpLinkToHostAndPort = new Regex(@"^g\w+://(?<hostName>[^:/\\]+)(:(?<port>\d+))?",
 			RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
+
+		/// <summary>
+		/// Determines whether [is i PV4 mapped to i PV6] [the specified address].
+		/// </summary>
+		/// <param name="address">The address.</param>
+		/// <returns><c>true</c> if [is i PV4 mapped to i PV6] [the specified address]; otherwise, <c>false</c>.</returns>
+		public static bool IsIPv4MappedToIPv6(IPAddress address)
+		{
+#if !FRM20
+			return address.IsIPv4MappedToIPv6;
+#else
+			//DotPeek adopted code, keep CLR 3.5 compat.:
+			if (address.AddressFamily != AddressFamily.InterNetworkV6)
+			{
+				return false;
+			}
+
+			int NumberOfLabels = 8;// = IPv6AddressBytes (= 16) / 2
+			ushort[] mNumbers = new ushort[NumberOfLabels];
+
+			var addressBytes = address.GetAddressBytes();
+			// convert to internal IPv6 array structure:
+			for (int i = 0; i < NumberOfLabels; i++)
+			{
+				mNumbers[i] = (ushort)(addressBytes[i * 2] * 256 + addressBytes[i * 2 + 1]);
+			}
+			// check:
+			for (int i = 0; i < 5; i++)
+			{
+				if (mNumbers[i] != 0)
+				{
+					return false;
+				}
+			}
+			return (mNumbers[5] == 0xFFFF);
+#endif
+		}
+
+		// IPv4 192.168.1.1 maps as ::FFFF:192.168.1.1
+		/// <summary>
+		/// Maps to an IPV6 address.
+		/// </summary>
+		/// <param name="address">The address.</param>
+		/// <returns>IPAddress.</returns>
+		public static IPAddress MapToIPv6(IPAddress address)
+		{
+#if !FRM20
+			return address.MapToIPv6();
+#else
+			//DotPeek adopted code, keep CLR 3.5 compat.:
+			if (address.AddressFamily == AddressFamily.InterNetworkV6)
+			{
+				return address;
+			}
+
+			int NumberOfLabels = 8;// = IPv6AddressBytes (= 16) / 2
+			ushort[] mNumbers = new ushort[NumberOfLabels];
+
+			var addressBytes = address.GetAddressBytes();
+			// convert to internal IPv6 array structure:
+			for (int i = 0; i < NumberOfLabels; i++)
+			{
+				mNumbers[i] = (ushort)(addressBytes[i * 2] * 256 + addressBytes[i * 2 + 1]);
+			}
+
+			var bytes = new byte[NumberOfLabels * 2];
+
+			int j = 0;
+			for (int i = 0; i < NumberOfLabels; i++)
+			{
+				bytes[j++] = (byte)((mNumbers[i] >> 8) & 0xFF);
+				bytes[j++] = (byte)((mNumbers[i]) & 0xFF);
+			}
+			return new IPAddress(bytes, 0);
+#endif
+		}
+
+
+		/// <summary>
+		/// Gets a value indicating whether the local system supports IPV6.
+		/// </summary>
+		/// <value><c>true</c> if [local system supports i PV6]; otherwise, <c>false</c>.</value>
+		public static bool LocalSystemSupportsIPv6
+		{
+			get
+			{
+				if (Environment.OSVersion.Version.Major >= 6)
+				{
+					var he = Dns.GetHostEntry("localhost");
+					foreach (var address in he.AddressList)
+						if (address.AddressFamily == AddressFamily.InterNetworkV6)
+							return true;
+				}
+				return false;
+			}
+		}
 		/// <summary>
 		/// Returns true if it is possible to connect to the given url.
 		/// </summary>

@@ -41,10 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UnitTests\GenuineUtilityTests.cs" />
+    <Compile Include="UnitTests\GtcpIPv6Tests.cs" />
+    <Compile Include="UnitTests\GtcpLocalhostTests.cs" />
     <Compile Include="UnitTests\GtcpTests.cs" />
     <Compile Include="UnitTests\GxhttpTests.cs" />
     <Compile Include="UnitTests\RegressionTests.cs" />
     <Compile Include="UnitTests\AssemblyInfo.cs" />
+    <Compile Include="UnitTests\RemoteServerTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sources\GenuineChannels.Desktop.v4.6.csproj">
