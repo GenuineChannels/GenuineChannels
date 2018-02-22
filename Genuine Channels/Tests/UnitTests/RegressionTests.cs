@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Text;
-using System.Threading.Tasks;
 using Belikov.GenuineChannels.GenuineTcp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

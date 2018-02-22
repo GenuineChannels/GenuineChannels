@@ -15,8 +15,12 @@ using System.Security;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AllowPartiallyTrustedCallers]
+#if FRM40
+//
+// NOTE: This attribute is only available in .NET Framework 4.0 or higher.
+//
 [assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
-
+#endif
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
 // COM, set the ComVisible attribute to true on that type.
