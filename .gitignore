@@ -35,6 +35,7 @@ Thumbs.db
 *.sdf
 *.xap
 obj/
+.vs/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
