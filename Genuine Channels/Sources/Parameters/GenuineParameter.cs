@@ -166,14 +166,27 @@ namespace Belikov.GenuineChannels.Parameters
 		/// </summary>
 		TcpSendBufferSize,
 
-		#endregion
+        /// <summary>
+        /// [BOOL] Indicates whether to use TCP port sharing. If set the listener port will be shared (other apps can use the same one).
+        /// In this case the socket option <seealso cref="System.Net.Sockets.SocketOptionName.ReuseAddress"/> will be applied.
+        /// Default value is false.
+        /// </summary>
+        TcpReuseAddressPort,
 
-		#region -- Shared memory -------------------------------------------------------------------
+        /// <summary>
+        /// [BOOL] The TCP dual socket mode will enable both IPv4 and IPv6 for the socket listener (Vista and Longhorn above only).
+        /// This will be true by default. If you like to force IPv4 or IPv6 listening only, set this option to false.
+        /// </summary>
+        TcpDualSocketMode,
 
-		/// <summary>
-		/// [INT] Size of the share in bytes.
-		/// </summary>
-		SMShareSize,
+        #endregion
+
+        #region -- Shared memory -------------------------------------------------------------------
+
+        /// <summary>
+        /// [INT] Size of the share in bytes.
+        /// </summary>
+        SMShareSize,
 
 		/// <summary>
 		/// [TimeSpan] The maximum time span within which the message must be completely received by a remote host.

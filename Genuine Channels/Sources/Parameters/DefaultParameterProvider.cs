@@ -57,6 +57,8 @@ namespace Belikov.GenuineChannels.Parameters
 			this._readParameters[(int) GenuineParameter.TcpPreventDelayedAck] = false;
 			this._readParameters[(int) GenuineParameter.TcpReceiveBufferSize] = -1;
 			this._readParameters[(int) GenuineParameter.TcpSendBufferSize] = -1;
+			this._readParameters[(int) GenuineParameter.TcpReuseAddressPort] = false;
+			this._readParameters[(int) GenuineParameter.TcpDualSocketMode] = true;
 
 			// Shared memory
 			this._readParameters[(int) GenuineParameter.SMShareSize] = 300000;

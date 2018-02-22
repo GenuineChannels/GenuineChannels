@@ -2330,7 +2330,8 @@ namespace Belikov.GenuineChannels.GenuineTcp
 			// Prepare dual-mode (IPv4 & IPv6) for the socket listener (Vista and Longhorn above only).
 			// Idea based on http://blogs.msdn.com/wndp/archive/2006/10/24/creating-ip-agnostic-applications-part-2-dual-mode-sockets.aspx
 			AddressFamily addressFamily = ipEndPoint.AddressFamily;
-			if (addressFamily == AddressFamily.InterNetwork && GenuineUtility.LocalSystemSupportsIPv6)
+			if ((bool)this.ITransportContext.IParameterProvider[GenuineParameter.TcpDualSocketMode] &&
+                addressFamily == AddressFamily.InterNetwork && GenuineUtility.LocalSystemSupportsIPv6)
 				addressFamily = AddressFamily.InterNetworkV6;
 
 			// start socket listening
@@ -2342,12 +2343,13 @@ namespace Belikov.GenuineChannels.GenuineTcp
 				LingerOption lingerOption = new LingerOption(true, 3);
 				socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, lingerOption);
 
-				// setup port sharing: share the port (other apps can use the same one):
-				//TODO: discuss, if this should be an properties entry controlled behavior?
-				//socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
+                // setup port sharing: share the port (other apps can use the same one):
+			    if ((bool)this.ITransportContext.IParameterProvider[GenuineParameter.TcpReuseAddressPort])
+                    socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
 
-				// setup dual listener mode, if IPv6 and IPv4 running at the same time.
-				if (addressFamily == AddressFamily.InterNetworkV6 && GenuineUtility.LocalSystemSupportsIPv6)
+                // setup dual listener mode, if IPv6 and IPv4 running at the same time.
+                if ((bool)this.ITransportContext.IParameterProvider[GenuineParameter.TcpDualSocketMode] &&
+                    addressFamily == AddressFamily.InterNetworkV6 && GenuineUtility.LocalSystemSupportsIPv6)
 				{
 					// Set dual-mode (IPv4 & IPv6) for the socket listener (Vista and Longhorn above only).
 					// 27 is equivalent to IPV6_V6ONLY socket option in the winsock snippet below,
