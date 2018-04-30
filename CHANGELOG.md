@@ -1,6 +1,6 @@
 # GenuineChannels Change Log
 
-## v2.5.9.10 (work in progress)
+## v2.5.9.10
 
 This version no longer supports .NET Framework 3.0 and below. The minimum supported version is .NET 3.5.
 
