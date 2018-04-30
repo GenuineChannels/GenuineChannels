@@ -1,6 +1,11 @@
 <img src="https://raw.githubusercontent.com/zyanfx/GenuineChannels/master/Nuget/GenuineChannelsLogo100x100.png" width="100" height="100">
 
 # GenuineChannels
+
+[![Appveyor](https://img.shields.io/appveyor/ci/yallie/genuinechannels.svg)](https://ci.appveyor.com/project/yallie/genuinechannels)
+[![Tests](https://img.shields.io/appveyor/tests/yallie/genuinechannels.svg)](https://ci.appveyor.com/project/yallie/genuinechannels/build/tests)
+[![NuGet](https://img.shields.io/nuget/v/GenuineChannels.svg)](https://nuget.org/packages/GenuineChannels)
+
 Collection of custom .NET Remoting channels licensed under MIT license.
 
 >Besides offering steady connections in any environment thanks to configurable reconnect feature, Genuine Channels support communication with clients located behind firewalls, NAT and proxy servers (including those requiring authorization). Data encryption managed by security sessions and data compression without installing sinks provide for both easier coding and fast and secure client-server communication.
@@ -14,9 +19,11 @@ Install the [Nuget package](https://www.nuget.org/packages/GenuineChannels/):
 Please refer to this [wiki page](https://github.com/zyanfx/GenuineChannels/wiki) for details.
 
 # License
+
 The MIT License (MIT)
 
-Copyright (c) 2005-2015 Dmitry Belikov, Sergey Tkachev
+Copyright (c) 2005-2015 Dmitry Belikov, Sergey Tkachev  
+Copyright (c) 2018 Genuine Channels Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
