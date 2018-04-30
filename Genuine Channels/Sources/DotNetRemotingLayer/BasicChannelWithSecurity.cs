@@ -1,7 +1,7 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
@@ -18,6 +18,7 @@ using Belikov.GenuineChannels.Security;
 using Belikov.GenuineChannels.Logbook;
 using Belikov.GenuineChannels.TransportContext;
 using Belikov.GenuineChannels.Utilities;
+using Zyan.SafeDeserializationHelpers.Channels;
 
 namespace Belikov.GenuineChannels.DotNetRemotingLayer
 {
@@ -53,7 +54,7 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 
 			// create default client formatter sink
 			if (this._iClientChannelSinkProvider == null)
-				this._iClientChannelSinkProvider = new BinaryClientFormatterSinkProvider();
+				this._iClientChannelSinkProvider = new SafeBinaryClientFormatterSinkProvider();
 
 			// connect client sink provider to the end
 			IClientChannelSinkProvider currentProvider = this._iClientChannelSinkProvider;
@@ -189,7 +190,7 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 		/// <summary>
 		/// Gets the priority of the channel.
 		/// </summary>
-		public int ChannelPriority 
+		public int ChannelPriority
 		{
 			get
 			{
@@ -221,7 +222,7 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 		/// <summary>
 		/// Gets the channel-specific data.
 		/// </summary>
-		public object ChannelData 
+		public object ChannelData
 		{
 			get
 			{
@@ -292,7 +293,7 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 				if (url.StartsWith(channelPrefixes[i]))
 					break;
 
-			// if the requested url wasn't recognized, it should be 
+			// if the requested url wasn't recognized, it should be
 			// directed to another channel
 			if (i == channelPrefixes.Length)
 				return null;
@@ -319,12 +320,12 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 		/// Gets or sets the current security context being used on the channel level.
 		/// </summary>
 		public SecuritySessionParameters SecuritySessionParameters
-		{ 
+		{
 			get
 			{
 				return this.ITransportContext.SecuritySessionParameters;
 			}
-			set 
+			set
 			{
 				this.ITransportContext.SecuritySessionParameters = value;
 			}
@@ -337,8 +338,8 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 		/// <summary>
 		/// Gets the URL prefix of the channel.
 		/// </summary>
-		public string UrlPrefix 
-		{ 
+		public string UrlPrefix
+		{
 			get
 			{
 				return _urlPrefix;
@@ -397,7 +398,7 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 			if ( binaryLogWriter != null && binaryLogWriter[LogCategory.ChannelEvent] > 0 )
 			{
 				binaryLogWriter.WriteEvent(LogCategory.ChannelEvent, "BasicChannelWithSecurity.FireGenuineEvent",
-					LogMessageType.ChannelEvent, e.SourceException, null, e.HostInformation, null, 
+					LogMessageType.ChannelEvent, e.SourceException, null, e.HostInformation, null,
 					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 					null, null, -1, (int) e.EventType, 0, 0, null, null, null, null,
 					"The channel event is raised.");
@@ -473,7 +474,7 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 			try
 			{
 				// enable logging
-				if (this.ITransportContext.IParameterProvider[GenuineParameter.EnableGlobalLoggingToFile] is string && 
+				if (this.ITransportContext.IParameterProvider[GenuineParameter.EnableGlobalLoggingToFile] is string &&
 					((string) this.ITransportContext.IParameterProvider[GenuineParameter.EnableGlobalLoggingToFile]).Length > 0)
 				{
 					GenuineLoggingServices.SetUpLoggingToFile(this.ITransportContext.IParameterProvider[GenuineParameter.EnableGlobalLoggingToFile] as string,

@@ -1,27 +1,22 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
 using System;
 using System.Collections;
-using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Principal;
-using System.Text;
-using System.Web;
-using System.Runtime.Remoting.Messaging;
-using System.Runtime.Serialization;
+using System.Threading;
 
 using Belikov.GenuineChannels.BroadcastEngine;
 using Belikov.GenuineChannels.Connection;
-using Belikov.GenuineChannels.DirectExchange;
 using Belikov.GenuineChannels.DotNetRemotingLayer;
 using Belikov.GenuineChannels.GenuineHttp;
 using Belikov.GenuineChannels.Logbook;
@@ -30,13 +25,14 @@ using Belikov.GenuineChannels.Parameters;
 using Belikov.GenuineChannels.Security;
 using Belikov.GenuineChannels.TransportContext;
 using Belikov.GenuineChannels.Utilities;
+using Zyan.SafeDeserializationHelpers;
 
 namespace Belikov.GenuineChannels.Receiving
 {
 	/// <summary>
-	/// Manages a number of message handlers processing incoming messages: 
-	/// wait cells, multiple response catchers, custom stream handlers, 
-	/// broadcast court interceptors, IClientChannelSinks and 
+	/// Manages a number of message handlers processing incoming messages:
+	/// wait cells, multiple response catchers, custom stream handlers,
+	/// broadcast court interceptors, IClientChannelSinks and
 	/// sync response catchers.
 	/// </summary>
 	public class GenuineReceivingHandler : MarshalByRefObject, IIncomingStreamHandler, ITimerConsumer
@@ -102,13 +98,13 @@ namespace Belikov.GenuineChannels.Receiving
 				// LOG:
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Security] > 0 )
 				{
-					binaryLogWriter.WriteEvent(LogCategory.Security, "GenuineReceivingHandler.HandleMessage", 
-						LogMessageType.SecuritySessionApplied, GenuineExceptions.Get_Security_ContextNotFound(sessionName), 
-						message, remote, 
-						null, GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+					binaryLogWriter.WriteEvent(LogCategory.Security, "GenuineReceivingHandler.HandleMessage",
+						LogMessageType.SecuritySessionApplied, GenuineExceptions.Get_Security_ContextNotFound(sessionName),
+						message, remote,
+						null, GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						securitySession, sessionName, dbgConnectionId,
 						0, 0, 0, null, null, null, null,
-						"The requested Security Session can not be constructed or established. The name of Security Session: {0}.", 
+						"The requested Security Session can not be constructed or established. The name of Security Session: {0}.",
 						sessionName);
 				}
 
@@ -136,9 +132,9 @@ namespace Belikov.GenuineChannels.Receiving
 			// LOG:
 			if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Security] > 0 )
 			{
-				binaryLogWriter.WriteEvent(LogCategory.Security, "GenuineReceivingHandler.HandleMessage", 
-					LogMessageType.SecuritySessionApplied, null, message, remote, 
-					null, GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+				binaryLogWriter.WriteEvent(LogCategory.Security, "GenuineReceivingHandler.HandleMessage",
+					LogMessageType.SecuritySessionApplied, null, message, remote,
+					null, GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 					securitySession, sessionName, dbgConnectionId,
 					0, 0, 0, null, null, null, null,
 					"The Security Session has been used for decrypting the message.");
@@ -155,8 +151,8 @@ namespace Belikov.GenuineChannels.Receiving
 					message.Stream = streamClone;
 				}
 
-				binaryLogWriter.WriteMessageCreatedEvent("GenuineReceivingHandler.HandleMessage", 
-					LogMessageType.MessageReceived, null, message, message.ReplyToId > 0, remote, 
+				binaryLogWriter.WriteMessageCreatedEvent("GenuineReceivingHandler.HandleMessage",
+					LogMessageType.MessageReceived, null, message, message.ReplyToId > 0, remote,
 					readContent ? message.Stream : null,
 					message.ITransportHeaders[Message.TransportHeadersInvocationTarget] as string, message.ITransportHeaders[Message.TransportHeadersMethodName] as string,
 					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, connectionName, dbgConnectionId,
@@ -174,8 +170,8 @@ namespace Belikov.GenuineChannels.Receiving
 			{
 				// LOG:
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
-					binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.HandleMessage", 
-						LogMessageType.MessageDispatched, GenuineExceptions.Get_Debugging_GeneralWarning("The message has been already processed."), message, remote, 
+					binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.HandleMessage",
+						LogMessageType.MessageDispatched, GenuineExceptions.Get_Debugging_GeneralWarning("The message has been already processed."), message, remote,
 						null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, securitySession, securitySession.Name,
 						dbgConnectionId,
@@ -245,8 +241,8 @@ namespace Belikov.GenuineChannels.Receiving
 				// LOG:
 				BinaryLogWriter binaryLogWriter = this.ITransportContext.BinaryLogWriter;
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
-					binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.InternalExecuteMessage", 
-						LogMessageType.SecuritySessionApplied, ex, message, message.Sender, 
+					binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.InternalExecuteMessage",
+						LogMessageType.SecuritySessionApplied, ex, message, message.Sender,
 						null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, message.ConnectionLevelSecuritySession, null,
 						-1, 0, 0, 0, null, null, null, null,
@@ -266,9 +262,9 @@ namespace Belikov.GenuineChannels.Receiving
 				// LOG:
 				BinaryLogWriter binaryLogWriter = this.ITransportContext.BinaryLogWriter;
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
-					binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.HandleMessage_AfterCLSS", 
-						LogMessageType.SecuritySessionApplied, GenuineExceptions.Get_Security_ContextNotFound(message.SecuritySessionParameters.Name), 
-						message, message.Sender, 
+					binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.HandleMessage_AfterCLSS",
+						LogMessageType.SecuritySessionApplied, GenuineExceptions.Get_Security_ContextNotFound(message.SecuritySessionParameters.Name),
+						message, message.Sender,
 						null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, message.SecuritySessionParameters.Name,
 						-1, 0, 0, 0, null, null, null, null,
@@ -279,10 +275,10 @@ namespace Belikov.GenuineChannels.Receiving
 			// initialize all the necessary info
 			using(new ThreadDataSlotKeeper(OccupiedThreadSlots.CurrentMessage, message))
 			{
-				if (message.HttpServerRequestResult != null && 
-					(bool) message.ITransportContext.IParameterProvider[GenuineParameter.HttpAuthentication] && 
-					message.HttpServerRequestResult.IPrincipal != null && 
-					message.HttpServerRequestResult.IPrincipal.Identity is WindowsIdentity && 
+				if (message.HttpServerRequestResult != null &&
+					(bool) message.ITransportContext.IParameterProvider[GenuineParameter.HttpAuthentication] &&
+					message.HttpServerRequestResult.IPrincipal != null &&
+					message.HttpServerRequestResult.IPrincipal.Identity is WindowsIdentity &&
 					((WindowsIdentity) message.HttpServerRequestResult.IPrincipal.Identity).Token != IntPtr.Zero )
 				{
 					// impersonate authenticated security context
@@ -355,8 +351,8 @@ namespace Belikov.GenuineChannels.Receiving
 
 //			if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Security] > 0 )
 //				binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.HandleMessage_Final",
-//					LogMessageType.MessageDispatched, null, message, message.Recipient, null, 
-//					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+//					LogMessageType.MessageDispatched, null, message, message.Recipient, null,
+//					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 //					null, message.SecuritySessionParameters.Name, -1, 0, 0, 0, null, null, null, null,
 //					"The message is dispatched.");
 
@@ -371,7 +367,7 @@ namespace Belikov.GenuineChannels.Receiving
 				case GenuineMessageType.TrueBroadcast:
 				case GenuineMessageType.BroadcastEngine:
 					// get the string
-					BinaryFormatter binaryFormatter = new BinaryFormatter();
+					var binaryFormatter = new BinaryFormatter().Safe();
 					IMessage iMessage = null;
 
 					try
@@ -398,9 +394,9 @@ namespace Belikov.GenuineChannels.Receiving
 								if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 								{
 									binaryLogWriter.WriteEvent(LogCategory.BroadcastEngine, "GenuineReceivingHanlder.HandleMessage_Final",
-										LogMessageType.MessageRequestInvoking, GenuineExceptions.Get_Debugging_GeneralWarning("No objects are associated with the \"{0}\" court.", (string) message.DestinationMarshalByRef), 
+										LogMessageType.MessageRequestInvoking, GenuineExceptions.Get_Debugging_GeneralWarning("No objects are associated with the \"{0}\" court.", (string) message.DestinationMarshalByRef),
 										message, message.Sender, null,
-										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 										null, null, -1, 0, 0, 0, null, null, null, null,
 										"The message is ignored because no objects are associated with the \"{0}\" court.", (string) message.DestinationMarshalByRef);
 								}
@@ -408,16 +404,16 @@ namespace Belikov.GenuineChannels.Receiving
 								return ;
 							}
 
-							if (message.ITransportHeaders[Message.TransportHeadersBroadcastSendGuid] is string 
+							if (message.ITransportHeaders[Message.TransportHeadersBroadcastSendGuid] is string
 								&& UniqueCallTracer.Instance.WasGuidRegistered( RemotingServices.GetObjectUri(receiver) + (string) message.ITransportHeaders[Message.TransportHeadersBroadcastSendGuid]))
 							{
 								// LOG: put down the log record
 								if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 								{
 									binaryLogWriter.WriteEvent(LogCategory.BroadcastEngine, "GenuineReceivingHanlder.HandleMessage_Final",
-										LogMessageType.MessageRequestInvoking, GenuineExceptions.Get_Broadcast_CallHasAlreadyBeenMade(), 
+										LogMessageType.MessageRequestInvoking, GenuineExceptions.Get_Broadcast_CallHasAlreadyBeenMade(),
 										message, message.Sender, null,
-										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 										null, null, -1, 0, 0, 0, null, null, null, null,
 										"This message is ignored because this call has been already processed.");
 								}
@@ -434,9 +430,9 @@ namespace Belikov.GenuineChannels.Receiving
 									if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 									{
 										binaryLogWriter.WriteEvent(LogCategory.BroadcastEngine, "GenuineReceivingHanlder.HandleMessage_Final",
-											LogMessageType.MessageRequestInvoking, null, 
+											LogMessageType.MessageRequestInvoking, null,
 											message, message.Sender, null,
-											GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+											GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 											null, null, -1, 0, 0, 0, null, null, null, null,
 											"The multicast message is being invoked on court \"{0}\".", (string) message.DestinationMarshalByRef);
 									}
@@ -449,9 +445,9 @@ namespace Belikov.GenuineChannels.Receiving
 									if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 									{
 										binaryLogWriter.WriteEvent(LogCategory.BroadcastEngine, "GenuineReceivingHanlder.HandleMessage_Final",
-											LogMessageType.MessageRequestInvoking, ex, 
+											LogMessageType.MessageRequestInvoking, ex,
 											message, message.Sender, null,
-											GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+											GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 											null, null, -1, 0, 0, 0, null, null, null, null,
 											"An exception occurred while the message was being processed. The exception is dispatched back.");
 									}
@@ -498,14 +494,14 @@ namespace Belikov.GenuineChannels.Receiving
 								{
 									binaryLogWriter.WriteImplementationWarningEvent("GenuineReceivingHandler.HandleMessage_Final",
 										LogMessageType.CriticalError, exception,
-										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 										"The response with the {0} type cannot be processed.", message.DestinationMarshalByRef.GetType());
 								}
 
 								throw exception;
 							}
 
-							if (message.ITransportHeaders[Message.TransportHeadersBroadcastSendGuid] is string 
+							if (message.ITransportHeaders[Message.TransportHeadersBroadcastSendGuid] is string
 								&& UniqueCallTracer.Instance.WasGuidRegistered( RemotingServices.GetObjectUri( marshalByRefObject ) + (string) message.ITransportHeaders[Message.TransportHeadersBroadcastSendGuid]))
 							{
 								Exception exception = GenuineExceptions.Get_Broadcast_CallHasAlreadyBeenMade();
@@ -514,9 +510,9 @@ namespace Belikov.GenuineChannels.Receiving
 								if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 								{
 									binaryLogWriter.WriteEvent(LogCategory.BroadcastEngine, "GenuineReceivingHanlder.HandleMessage_Final",
-										LogMessageType.MessageRequestInvoking, exception, 
+										LogMessageType.MessageRequestInvoking, exception,
 										message, message.Sender, null,
-										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 										null, null, -1, 0, 0, 0, null, null, null, null,
 										"This message is ignored because this call has been already processed.");
 								}
@@ -529,9 +525,9 @@ namespace Belikov.GenuineChannels.Receiving
 								if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 								{
 									binaryLogWriter.WriteEvent(LogCategory.BroadcastEngine, "GenuineReceivingHanlder.HandleMessage_Final",
-										LogMessageType.MessageRequestInvoking, null, 
+										LogMessageType.MessageRequestInvoking, null,
 										message, message.Sender, null,
-										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 										null, null, -1, 0, 0, 0, null, null, null, null,
 										"The usual broadcast message is being invoked.");
 								}
@@ -557,9 +553,9 @@ namespace Belikov.GenuineChannels.Receiving
 							if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 							{
 								binaryLogWriter.WriteEvent(LogCategory.BroadcastEngine, "GenuineReceivingHanlder.HandleMessage_Final",
-									LogMessageType.MessageRequestInvoking, ex, 
+									LogMessageType.MessageRequestInvoking, ex,
 									message, message.Sender, null,
-									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 									null, null, -1, 0, 0, 0, null, null, null, null,
 									"An exception occurred while the usual broadcast message was being processed. The exception is dispatched back.");
 							}
@@ -581,9 +577,9 @@ namespace Belikov.GenuineChannels.Receiving
 							if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 							{
 								binaryLogWriter.WriteEvent(LogCategory.BroadcastEngine, "GenuineReceivingHanlder.HandleMessage_Final",
-									LogMessageType.MessageRequestInvoking, internalException, 
+									LogMessageType.MessageRequestInvoking, internalException,
 									message, message.Sender, null,
-									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 									null, null, -1, 0, 0, 0, null, null, null, null,
 									"An exception occurred again while the previous exception was being serialized. This request is ignored.");
 							}
@@ -625,9 +621,9 @@ namespace Belikov.GenuineChannels.Receiving
 							if ( binaryLogWriter != null && binaryLogWriter[LogCategory.DXM] > 0 )
 							{
 								binaryLogWriter.WriteEvent(LogCategory.BroadcastEngine, "GenuineReceivingHanlder.HandleMessage_Final",
-									LogMessageType.MessageRequestInvoking, null, 
+									LogMessageType.MessageRequestInvoking, null,
 									message, message.Sender, null,
-									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 									null, null, -1, 0, 0, 0, null, null, null, null,
 									"The DXM message is being dispatched to the \"{0}\" entry.", entryName);
 							}
@@ -649,8 +645,8 @@ namespace Belikov.GenuineChannels.Receiving
 								}
 
 								binaryLogWriter.WriteMessageCreatedEvent("AsyncSinkStackResponseProcessor.ProcessRespose",
-									LogMessageType.MessageCreated, null, reply, false, reply.Recipient, 
-									this.ITransportContext.BinaryLogWriter[LogCategory.MessageProcessing] > 1 ? reply.Stream : null, 
+									LogMessageType.MessageCreated, null, reply, false, reply.Recipient,
+									this.ITransportContext.BinaryLogWriter[LogCategory.MessageProcessing] > 1 ? reply.Stream : null,
 									entryName, entryName,
 									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, -1, -1, null, -1, null,
 									"A response to DXM request has been created.");
@@ -659,8 +655,8 @@ namespace Belikov.GenuineChannels.Receiving
 								message.ITransportHeaders[Message.TransportHeadersMethodName] = entryName;
 
 								binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "AsyncSinkStackResponseProcessor.ProcessRespose",
-									LogMessageType.MessageRequestInvoked, null, reply, reply.Recipient, null, 
-									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, -1, 
+									LogMessageType.MessageRequestInvoked, null, reply, reply.Recipient, null,
+									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, -1,
 									GenuineUtility.TickCount, 0, message.SeqNo, null, null, null, null,
 									"The DXM invocation has been completed.");
 							}
@@ -673,15 +669,15 @@ namespace Belikov.GenuineChannels.Receiving
 							if ( binaryLogWriter != null && binaryLogWriter[LogCategory.DXM] > 0 )
 							{
 								binaryLogWriter.WriteEvent(LogCategory.BroadcastEngine, "GenuineReceivingHanlder.HandleMessage_Final",
-									LogMessageType.MessageRequestInvoking, ex, 
+									LogMessageType.MessageRequestInvoking, ex,
 									message, message.Sender, null,
-									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 									null, null, -1, 0, 0, 0, null, null, null, null,
 									"The invocation of the DXM message directed to the \"{0}\" entry has resulted in exception.", entryName);
 							}
 
 							// return this exception as a result
-							BinaryFormatter binaryFormatter2 = new BinaryFormatter();
+							var binaryFormatter2 = new BinaryFormatter().Safe();
 							GenuineChunkedStream serializedException = new GenuineChunkedStream(false);
 							binaryFormatter2.Serialize(serializedException, ex);
 
@@ -698,8 +694,8 @@ namespace Belikov.GenuineChannels.Receiving
 									methodName = service.GetType().FullName;
 
 								binaryLogWriter.WriteMessageCreatedEvent("GenuineReceivingHanlder.HandleMessage_Final",
-									LogMessageType.MessageCreated, null, reply, false, reply.Recipient, 
-									this.ITransportContext.BinaryLogWriter[LogCategory.MessageProcessing] > 1 ? reply.Stream : null, 
+									LogMessageType.MessageCreated, null, reply, false, reply.Recipient,
+									this.ITransportContext.BinaryLogWriter[LogCategory.MessageProcessing] > 1 ? reply.Stream : null,
 									invocationTarget, methodName,
 									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, -1, -1, null, -1, null,
 									"The response to DXM message directed to the \"{0}\" court has been created.", entryName);
@@ -716,9 +712,9 @@ namespace Belikov.GenuineChannels.Receiving
 				default:
 					// LOG:
 					if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
-						binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.HandleMessage_Final", 
-							LogMessageType.MessageDispatched, GenuineExceptions.Get_Debugging_GeneralWarning("Unknown message type."), 
-							message, message.Sender, 
+						binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.HandleMessage_Final",
+							LogMessageType.MessageDispatched, GenuineExceptions.Get_Debugging_GeneralWarning("Unknown message type."),
+							message, message.Sender,
 							null,
 							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, message.SecuritySessionParameters.Name,
 							-1, 0, 0, 0, null, null, null, null,
@@ -741,8 +737,8 @@ namespace Belikov.GenuineChannels.Receiving
 			string methodName = BinaryLogWriter.ParseInvocationMethod(ret.Properties["__MethodName"] as string, ret.Properties["__TypeName"] as string);
 
 			binaryLogWriter.WriteMessageCreatedEvent("GenuineReceivingHanlder.PutDownRecordAboutResponseCreation",
-				LogMessageType.MessageCreated, null, reply, false, reply.Recipient, 
-				this.ITransportContext.BinaryLogWriter[LogCategory.MessageProcessing] > 1 ? reply.Stream : null, 
+				LogMessageType.MessageCreated, null, reply, false, reply.Recipient,
+				this.ITransportContext.BinaryLogWriter[LogCategory.MessageProcessing] > 1 ? reply.Stream : null,
 				invocationTarget, methodName,
 				GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, -1, -1, null, -1, null,
 				message, parameters);
@@ -775,7 +771,7 @@ namespace Belikov.GenuineChannels.Receiving
 		private static Hashtable _responseHandlers = Hashtable.Synchronized(new Hashtable());
 
 		/// <summary>
-		/// Registers a response processor that waits for messages containing a response to the 
+		/// Registers a response processor that waits for messages containing a response to the
 		/// message with the specified identifier.
 		/// </summary>
 		/// <param name="replyId">ID of the source message.</param>
@@ -823,9 +819,9 @@ namespace Belikov.GenuineChannels.Receiving
 			// LOG:
 			BinaryLogWriter binaryLogWriter = this.ITransportContext.BinaryLogWriter;
 			if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
-				binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.DispatchException", 
-					LogMessageType.ExceptionDispatched, exception, 
-					null, hostInformation, 
+				binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.DispatchException",
+					LogMessageType.ExceptionDispatched, exception,
+					null, hostInformation,
 					null,
 					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
 					-1, 0, 0, 0, null, null, null, null,
@@ -841,7 +837,7 @@ namespace Belikov.GenuineChannels.Receiving
 
 					// 2.5.2 fix; fixed in 2.5.6 again
 					bool hostsEqual = (iResponseProcessor.Remote == hostInformation);
-					
+
 					if (! hostsEqual && iResponseProcessor.Remote != null && hostInformation != null)
 						hostsEqual = (iResponseProcessor.Remote.Url == hostInformation.Url && hostInformation.Url != null)
 							|| (iResponseProcessor.Remote.Uri == hostInformation.Uri && hostInformation.Uri != null);
@@ -856,9 +852,9 @@ namespace Belikov.GenuineChannels.Receiving
 
 					// LOG:
 					if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
-						binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.DispatchException", 
-							LogMessageType.ExceptionDispatched, exception, 
-							iResponseProcessor.Message, hostInformation, 
+						binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.DispatchException",
+							LogMessageType.ExceptionDispatched, exception,
+							iResponseProcessor.Message, hostInformation,
 							null,
 							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
 							-1, 0, 0, 0, null, null, null, null,
@@ -870,7 +866,7 @@ namespace Belikov.GenuineChannels.Receiving
 #else
 					GenuineReceivingHandler._responseHandlers.Remove(entry.Key);
 #endif
-					
+
 				}
 			}
 		}
@@ -885,9 +881,9 @@ namespace Belikov.GenuineChannels.Receiving
 			// LOG:
 			BinaryLogWriter binaryLogWriter = this.ITransportContext.BinaryLogWriter;
 			if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
-				binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.DispatchException2", 
-					LogMessageType.ExceptionDispatched, exception, 
-					sourceMessage, sourceMessage.Recipient, 
+				binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineReceivingHandler.DispatchException2",
+					LogMessageType.ExceptionDispatched, exception,
+					sourceMessage, sourceMessage.Recipient,
 					null,
 					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
 					-1, 0, 0, 0, null, null, null, null,

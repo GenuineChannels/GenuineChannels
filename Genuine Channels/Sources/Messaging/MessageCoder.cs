@@ -7,21 +7,14 @@
 
 using System;
 using System.Collections;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading;
-using System.Runtime.Remoting.Messaging;
-using System.Runtime.Serialization;
 
 using Belikov.GenuineChannels.Connection;
-using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.Security;
-using Belikov.GenuineChannels.Logbook;
-using Belikov.GenuineChannels.TransportContext;
+using Zyan.SafeDeserializationHelpers;
 
 namespace Belikov.GenuineChannels.Messaging
 {
@@ -75,7 +68,7 @@ namespace Belikov.GenuineChannels.Messaging
 			// objref if it exists
 			if (message.DestinationMarshalByRef != null)
 			{
-				BinaryFormatter binaryFormatter = new BinaryFormatter();
+				var binaryFormatter = new BinaryFormatter().Safe();
 				binaryWriter.Write( true );
 				binaryFormatter.Serialize(binaryWriter.BaseStream, message.DestinationMarshalByRef);
 			}
@@ -145,7 +138,7 @@ namespace Belikov.GenuineChannels.Messaging
 			bool mbrWritten = binaryReader.ReadBoolean();
 			if (mbrWritten)
 			{
-				BinaryFormatter binaryFormatter = new BinaryFormatter();
+				var binaryFormatter = new BinaryFormatter().Safe();
 				message.DestinationMarshalByRef = binaryFormatter.Deserialize(stream);
 			}
 

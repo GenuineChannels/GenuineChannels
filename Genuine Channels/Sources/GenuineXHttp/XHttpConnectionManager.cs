@@ -1,7 +1,7 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
@@ -12,26 +12,25 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Remoting.Channels;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading;
-using System.Text;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Threading;
 
 using Belikov.Common.ThreadProcessing;
-
-using Belikov.GenuineChannels.BufferPooling;
 using Belikov.GenuineChannels.Connection;
 using Belikov.GenuineChannels.DotNetRemotingLayer;
-using Belikov.GenuineChannels.Logbook;
-using Belikov.GenuineChannels.GenuineTcp;
 using Belikov.GenuineChannels.GenuineHttp;
+using Belikov.GenuineChannels.GenuineTcp;
+using Belikov.GenuineChannels.Logbook;
 using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.Parameters;
 using Belikov.GenuineChannels.Receiving;
 using Belikov.GenuineChannels.Security;
 using Belikov.GenuineChannels.TransportContext;
 using Belikov.GenuineChannels.Utilities;
+using Zyan.SafeDeserializationHelpers;
 
 namespace Belikov.GenuineChannels.GenuineXHttp
 {
@@ -141,9 +140,9 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				string connectionName;
 				int remoteHostUniqueIdentifier;
 				Stream inputStream = this.LowLevel_ParseHttpContent(
-					GenuineUtility.GetTimeout(this._xHttpReadHeaderTimeout), true, 
-					xHttpPhysicalConnection.Socket, xHttpPhysicalConnection.ConnectionLevelSecurity, 
-					out protocolVersion, out remoteUri, out sequenceNo, out genuineConnectionType, out connectionId, 
+					GenuineUtility.GetTimeout(this._xHttpReadHeaderTimeout), true,
+					xHttpPhysicalConnection.Socket, xHttpPhysicalConnection.ConnectionLevelSecurity,
+					out protocolVersion, out remoteUri, out sequenceNo, out genuineConnectionType, out connectionId,
 					out httpPacketType, out connectionName, out remoteHostUniqueIdentifier);
 
 				// client & sender - just check the sequenceNo and continue sending from the pool
@@ -307,10 +306,10 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 						if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 						{
 							binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.Pool_Server_ContinueHalfSyncreceiving",
-								LogMessageType.ConnectionStreamDesynchronization, GenuineExceptions.Get_Debugging_GeneralWarning("Stream desynchronization."), 
-								null, xHttpPhysicalConnection.Remote, null, 
+								LogMessageType.ConnectionStreamDesynchronization, GenuineExceptions.Get_Debugging_GeneralWarning("Stream desynchronization."),
+								null, xHttpPhysicalConnection.Remote, null,
 								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
-								xHttpPhysicalConnection.ConnectionLevelSecurity, xHttpPhysicalConnection.ConnectionLevelSecurity == null ? null : xHttpPhysicalConnection.ConnectionLevelSecurity.Name, 
+								xHttpPhysicalConnection.ConnectionLevelSecurity, xHttpPhysicalConnection.ConnectionLevelSecurity == null ? null : xHttpPhysicalConnection.ConnectionLevelSecurity.Name,
 								xHttpConnection.DbgConnectionId, 0, 0, 0, null, null, null, null,
 								"Stream desynchronization error. Received sequence number: {0}. Expected sequence number: {1}.", xHttpPhysicalConnection.SequenceNo, sequenceNo);
 						}
@@ -338,10 +337,10 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.Pool_Server_ContinueHalfSyncreceiving",
-						LogMessageType.ReceivingFinished, null, 
-						null, xHttpPhysicalConnection.Remote, null, 
+						LogMessageType.ReceivingFinished, null,
+						null, xHttpPhysicalConnection.Remote, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
-						xHttpPhysicalConnection.ConnectionLevelSecurity, xHttpPhysicalConnection.ConnectionLevelSecurity == null ? null : xHttpPhysicalConnection.ConnectionLevelSecurity.Name, 
+						xHttpPhysicalConnection.ConnectionLevelSecurity, xHttpPhysicalConnection.ConnectionLevelSecurity == null ? null : xHttpPhysicalConnection.ConnectionLevelSecurity.Name,
 						xHttpConnection.DbgConnectionId, 0, 0, 0, null, null, null, null,
 						"HTTP Stream received. Packet type: {0}.", Enum.Format(typeof(HttpPacketType), httpPacketType, "g"));
 				}
@@ -429,10 +428,10 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 					if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 					{
 						binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.Pool_Server_ContinueHalfSyncreceiving",
-							LogMessageType.ReceivingFinished, ex, 
-							null, xHttpPhysicalConnection.Remote, null, 
+							LogMessageType.ReceivingFinished, ex,
+							null, xHttpPhysicalConnection.Remote, null,
 							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
-							xHttpPhysicalConnection.ConnectionLevelSecurity, xHttpPhysicalConnection.ConnectionLevelSecurity == null ? null : xHttpPhysicalConnection.ConnectionLevelSecurity.Name, 
+							xHttpPhysicalConnection.ConnectionLevelSecurity, xHttpPhysicalConnection.ConnectionLevelSecurity == null ? null : xHttpPhysicalConnection.ConnectionLevelSecurity.Name,
 							xHttpConnection.DbgConnectionId, 0, 0, 0, null, null, null, null,
 							"Error occurred while receiving HTTP Stream. Sequence No: {0}. Connection type: {1}. Packet type: {2}.",
 							sequenceNo, genuineConnectionType, httpPacketType);
@@ -467,9 +466,9 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 					}
 
 					// some data is available, gather the stream and send it
-					this.LowLevel_SendHttpContent(GenuineUtility.GetTimeout(xHttpConnection.CloseConnectionAfterInactivity), 
-						message, null, null, xHttpConnection.MessageContainer, xHttpPhysicalConnection, 
-						xHttpConnection.GenuineConnectionType, HttpPacketType.Usual, 
+					this.LowLevel_SendHttpContent(GenuineUtility.GetTimeout(xHttpConnection.CloseConnectionAfterInactivity),
+						message, null, null, xHttpConnection.MessageContainer, xHttpPhysicalConnection,
+						xHttpConnection.GenuineConnectionType, HttpPacketType.Usual,
 						false, true, true, true);
 				}
 				catch(Exception ex)
@@ -479,10 +478,10 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 					if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 					{
 						binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.Pool_Server_ProcessListenerRequest",
-							LogMessageType.AsynchronousSendingStarted, ex, 
-							null, xHttpPhysicalConnection.Remote, null, 
+							LogMessageType.AsynchronousSendingStarted, ex,
+							null, xHttpPhysicalConnection.Remote, null,
 							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
-							null, null, 
+							null, null,
 							xHttpConnection.DbgConnectionId, 0, 0, 0, null, null, null, null,
 							"Error occurred while sending HTTP Listener Request. Sequence No: {0}.",
 							xHttpPhysicalConnection.SequenceNo);
@@ -515,10 +514,10 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.Pool_Server_ProcessSenderRequest",
-						LogMessageType.ReceivingFinished, ex, 
-						null, xHttpConnection.Remote, null, 
+						LogMessageType.ReceivingFinished, ex,
+						null, xHttpConnection.Remote, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
-						null, null, 
+						null, null,
 						xHttpConnection.DbgConnectionId, 0, 0, 0, null, null, null, null,
 						"Error occurred while parsing HTTP Sender Request. Sequence No: {0}.",
 						xHttpPhysicalConnection.SequenceNo);
@@ -529,18 +528,18 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 			{
 				gotException = OperationException.WrapException(gotException);
 				GenuineChunkedStream outputStream = new GenuineChunkedStream(false);
-				BinaryFormatter binaryFormatter = new BinaryFormatter(new RemotingSurrogateSelector(), new StreamingContext(StreamingContextStates.Other));
+				var binaryFormatter = new BinaryFormatter(new RemotingSurrogateSelector(), new StreamingContext(StreamingContextStates.Other)).Safe();
 				binaryFormatter.Serialize(outputStream, gotException);
 
-				this.LowLevel_SendHttpContent(GenuineUtility.GetTimeout(xHttpConnection.CloseConnectionAfterInactivity), 
-					null, null, gotException, null, xHttpPhysicalConnection, 
+				this.LowLevel_SendHttpContent(GenuineUtility.GetTimeout(xHttpConnection.CloseConnectionAfterInactivity),
+					null, null, gotException, null, xHttpPhysicalConnection,
 					GenuineConnectionType.Persistent, HttpPacketType.SenderError,
 					false, true, true, false);
 			}
 			else
 			{
 				// serialize and send the OK response
-				this.LowLevel_SendHttpContent(GenuineUtility.GetTimeout(xHttpConnection.CloseConnectionAfterInactivity), 
+				this.LowLevel_SendHttpContent(GenuineUtility.GetTimeout(xHttpConnection.CloseConnectionAfterInactivity),
 					null, null, null, null, xHttpPhysicalConnection, GenuineConnectionType.Persistent,
 					HttpPacketType.SenderResponse, false, true, true, false);
 			}
@@ -579,7 +578,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 
 				this.LowLevel_SendHttpContent(GenuineUtility.GetTimeout(xHttpPhysicalConnection.XHttpConnection.CloseConnectionAfterInactivity),
 					message, null, null, xHttpPhysicalConnection.XHttpConnection.MessageContainer,
-					xHttpPhysicalConnection, GenuineConnectionType.Persistent, HttpPacketType.Usual, 
+					xHttpPhysicalConnection, GenuineConnectionType.Persistent, HttpPacketType.Usual,
 					false, true, true, true);
 			}
 		}
@@ -592,7 +591,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 		private void Pool_Listener_HandleClientConnection(XHttpPhysicalConnection xHttpPhysicalConnection)
 		{
 			this.LowLevel_SendHttpContent(GenuineUtility.GetTimeout(xHttpPhysicalConnection.XHttpConnection.CloseConnectionAfterInactivity),
-				null, null, null, null, xHttpPhysicalConnection, GenuineConnectionType.Persistent, 
+				null, null, null, null, xHttpPhysicalConnection, GenuineConnectionType.Persistent,
 				HttpPacketType.Listening, false, true, true, true);
 		}
 
@@ -717,7 +716,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 			if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 			{
 				binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.ReleaseConnections",
-					LogMessageType.ReleaseConnections, reason, null, hostInformation, null, 
+					LogMessageType.ReleaseConnections, reason, null, hostInformation, null,
 					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 					null, null, -1, 0, 0, 0, Enum.Format(typeof(GenuineConnectionType), genuineConnectionType, "g"), null, null, null,
 					"Connections \"{0}\" are terminated.", Enum.Format(typeof(GenuineConnectionType), genuineConnectionType, "g"), null);
@@ -743,7 +742,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.ReleaseConnections",
-						LogMessageType.ConnectionShuttingDown, reason, null, hostInformation, null, 
+						LogMessageType.ConnectionShuttingDown, reason, null, hostInformation, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						null, null, nextXHttpConnection.DbgConnectionId, 0, 0, 0, Enum.Format(typeof(GenuineConnectionType), genuineConnectionType, "g"), null, null, null,
 						"Connection is terminated.");
@@ -788,8 +787,8 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 					if ( binaryLogWriter != null )
 					{
 						binaryLogWriter.WriteImplementationWarningEvent("XHttpConnectionManager.ConnectionFailed",
-							LogMessageType.ConnectionFailed, exception, 
-							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+							LogMessageType.ConnectionFailed, exception,
+							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 							"The connection has not been specified while invoking XHttpConnectionManager.ConnectionFailed.");
 					}
 					return ;
@@ -814,8 +813,8 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.ConnectionFailed",
 						LogMessageType.ConnectionFailed, exception, null, remote, null,
-						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
-						null, null, 
+						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
+						null, null,
 						xHttpConnection == null ? -1 : xHttpConnection.DbgConnectionId, 0, 0, 0, null, null, null, null,
 						"XHTTP connection has failed.");
 				}
@@ -896,7 +895,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 			// LOG:
 			if ( binaryLogWriter != null )
 				binaryLogWriter.WriteImplementationWarningEvent("XHttpConnectionManager.ReestablishConnection",
-					LogMessageType.Warning, GenuineExceptions.Get_Debugging_GeneralWarning("The connection is available during ReestablishConnection invocation."), 
+					LogMessageType.Warning, GenuineExceptions.Get_Debugging_GeneralWarning("The connection is available during ReestablishConnection invocation."),
 					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 					"The connection is available during ReestablishConnection invocation.");
 
@@ -912,10 +911,10 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.ReestablishConnection",
-						LogMessageType.ConnectionReestablishing, null, null, xHttpPhysicalConnection.Remote, null, 
+						LogMessageType.ConnectionReestablishing, null, null, xHttpPhysicalConnection.Remote, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
-						null, null, 
-						xHttpPhysicalConnection.XHttpConnection.DbgConnectionId, 
+						null, null,
+						xHttpPhysicalConnection.XHttpConnection.DbgConnectionId,
 						0, 0, 0, null, null, null, null,
 						"Trying to reconnect to {0}.", remote.Url);
 				}
@@ -950,9 +949,9 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 							sentContentPresents = xHttpPhysicalConnection.SentContent != null;
 
 						if (sentContentPresents)
-							this.LowLevel_SendHttpContent(deadline, null, null, null, 
-								xHttpPhysicalConnection.XHttpConnection.MessageContainer, 
-								xHttpPhysicalConnection, GenuineConnectionType.Persistent, 
+							this.LowLevel_SendHttpContent(deadline, null, null, null,
+								xHttpPhysicalConnection.XHttpConnection.MessageContainer,
+								xHttpPhysicalConnection, GenuineConnectionType.Persistent,
 								HttpPacketType.Unkown, true, true, true, true);
 						else
 							this.Pool_HandleClientConnection(xHttpPhysicalConnection);
@@ -962,9 +961,9 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 						// LOG:
 						if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 							binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.ReestablishConnection",
-								LogMessageType.ConnectionReestablishing, ex, null, remote, null, 
+								LogMessageType.ConnectionReestablishing, ex, null, remote, null,
 								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
-								null, null, 
+								null, null,
 								-1, 0, 0, 0, null, null, null, null,
 								"Reconnection failed. The current try: {0}. Milliseconds remained: {1}.", tryNumber, GenuineUtility.CompareTickCounts(deadline, GenuineUtility.TickCount));
 						continue;
@@ -990,9 +989,9 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.ReestablishConnection",
-						LogMessageType.ConnectionReestablished, ex, null, remote, null, 
+						LogMessageType.ConnectionReestablished, ex, null, remote, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
-						null, null, -1, 
+						null, null, -1,
 						0, 0, 0, null, null, null, null,
 						"The connection cannot be reestablished.");
 				}
@@ -1034,10 +1033,10 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 		/// <param name="synchronous">Whether to send content synchronously.</param>
 		/// <param name="startAutomaticReceiving">Indicates whether to start automatic receiving of the response/request if the type of the sending is synchronous.</param>
 		/// <param name="applyClss">A boolean value indicating whether the CLSS should be applied.</param>
-		private void LowLevel_SendHttpContent(int timeout, Message message, 
-			GenuineChunkedStream content, Exception exceptionToBeSent, 
+		private void LowLevel_SendHttpContent(int timeout, Message message,
+			GenuineChunkedStream content, Exception exceptionToBeSent,
 			MessageContainer messageContainer, XHttpPhysicalConnection xHttpPhysicalConnection,
-			GenuineConnectionType genuineConnectionType, HttpPacketType httpPacketType, 
+			GenuineConnectionType genuineConnectionType, HttpPacketType httpPacketType,
 			bool repeatSending, bool synchronous, bool startAutomaticReceiving, bool applyClss
 			)
 		{
@@ -1065,9 +1064,9 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 					if (message != null || (message == null && content == null && exceptionToBeSent == null))
 					{
 						GenuineChunkedStream packedMessages = new GenuineChunkedStream(false);
-						MessageCoder.FillInLabelledStream(message, messageContainer, 
-							xHttpPhysicalConnection.MessagesBeingSent, packedMessages, 
-							xHttpPhysicalConnection.AsyncSendBuffer, 
+						MessageCoder.FillInLabelledStream(message, messageContainer,
+							xHttpPhysicalConnection.MessagesBeingSent, packedMessages,
+							xHttpPhysicalConnection.AsyncSendBuffer,
 							(int) this.ITransportContext.IParameterProvider[GenuineParameter.HttpRecommendedPacketSize]);
 
 						// LOG:
@@ -1081,7 +1080,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 									LogMessageType.MessageIsSentAsynchronously, null, nextMessage, xHttpPhysicalConnection.Remote, null,
 									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, xHttpPhysicalConnection.ConnectionLevelSecurity, null,
 									xHttpPhysicalConnection.XHttpConnection.DbgConnectionId, xHttpPhysicalConnection.SequenceNo, 0, 0, null, null, null, null,
-									"The message will be sent in the {0} stream N: {1}.", 
+									"The message will be sent in the {0} stream N: {1}.",
 									xHttpPhysicalConnection == xHttpPhysicalConnection.XHttpConnection.Sender ? "SENDER" : "LISTENER",
 									xHttpPhysicalConnection.SequenceNo);
 							}
@@ -1102,7 +1101,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 
 						Exception exception = OperationException.WrapException(exceptionToBeSent);
 						GenuineChunkedStream output = new GenuineChunkedStream(false);
-						BinaryFormatter binaryFormatter = new BinaryFormatter(new RemotingSurrogateSelector(), new StreamingContext(StreamingContextStates.Other));
+						var binaryFormatter = new BinaryFormatter(new RemotingSurrogateSelector(), new StreamingContext(StreamingContextStates.Other)).Safe();
 						binaryFormatter.Serialize(output, exception);
 
 						xHttpPhysicalConnection.MessagesBeingSent.Clear();
@@ -1156,7 +1155,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 					else
 					{
 						string now = DateTime.Now.ToString("r");
-						streamWriter.Write("HTTP/1.1 200 OK\r\nServer: GXHTTP\r\nDate: {0}\r\nX-Powered-By: Genuine Channels\r\nCache-Control: private\r\nContent-Type: application/octet-stream\r\nContent-Length: {1}\r\n\r\n", 
+						streamWriter.Write("HTTP/1.1 200 OK\r\nServer: GXHTTP\r\nDate: {0}\r\nX-Powered-By: Genuine Channels\r\nCache-Control: private\r\nContent-Type: application/octet-stream\r\nContent-Length: {1}\r\n\r\n",
 							now, xHttpPhysicalConnection.SentContent.Length);
 					}
 
@@ -1291,14 +1290,14 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 			if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Transport] > 0 )
 				binaryLogWriter.WriteEvent(LogCategory.Transport, "XHttpConnectionManager.LowLevel_InitiateAsyncSending",
 					LogMessageType.AsynchronousSendingStarted, null, null, xHttpPhysicalConnection.Remote, null,
-					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
-					null, null, 
+					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
+					null, null,
 					xHttpPhysicalConnection.XHttpConnection.DbgConnectionId, 0, 0, 0, null, null, null, null,
 					"The connection has been obtained and the stream is being sent asynchronously.");
 
-			AsyncThreadStarter.QueueTask(new Async_InitiateSocketSending(xHttpPhysicalConnection.Socket, xHttpPhysicalConnection.AsyncSendBuffer, 
-				xHttpPhysicalConnection.AsyncSendBufferCurrentPosition, 
-				xHttpPhysicalConnection.AsyncSendBufferSizeOfValidContent - xHttpPhysicalConnection.AsyncSendBufferCurrentPosition, 
+			AsyncThreadStarter.QueueTask(new Async_InitiateSocketSending(xHttpPhysicalConnection.Socket, xHttpPhysicalConnection.AsyncSendBuffer,
+				xHttpPhysicalConnection.AsyncSendBufferCurrentPosition,
+				xHttpPhysicalConnection.AsyncSendBufferSizeOfValidContent - xHttpPhysicalConnection.AsyncSendBufferCurrentPosition,
 				this._AsyncSending_onEndSending, xHttpPhysicalConnection));
 
 			return true;
@@ -1325,10 +1324,10 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				if (xHttpPhysicalConnection.AsyncSendBufferCurrentPosition < xHttpPhysicalConnection.AsyncSendBufferSizeOfValidContent)
 				{
 					// continue sending
-					AsyncThreadStarter.QueueTask(new Async_InitiateSocketSending(xHttpPhysicalConnection.Socket, 
-						xHttpPhysicalConnection.AsyncSendBuffer, 
-						xHttpPhysicalConnection.AsyncSendBufferCurrentPosition, 
-						xHttpPhysicalConnection.AsyncSendBufferSizeOfValidContent - xHttpPhysicalConnection.AsyncSendBufferCurrentPosition, 
+					AsyncThreadStarter.QueueTask(new Async_InitiateSocketSending(xHttpPhysicalConnection.Socket,
+						xHttpPhysicalConnection.AsyncSendBuffer,
+						xHttpPhysicalConnection.AsyncSendBufferCurrentPosition,
+						xHttpPhysicalConnection.AsyncSendBufferSizeOfValidContent - xHttpPhysicalConnection.AsyncSendBufferCurrentPosition,
 						this._AsyncSending_onEndSending, xHttpPhysicalConnection));
 					return ;
 				}
@@ -1447,8 +1446,8 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 			if ( binaryLogWriter != null && binaryLogWriter[LogCategory.LowLevelTransport] > 0 )
 			{
 				binaryLogWriter.WriteTransportContentEvent(LogCategory.LowLevelTransport, "XHttpConnectionManager.LowLevel_ParseHttpContent",
-					LogMessageType.LowLevelTransport_SyncReceivingCompleted, null, null, null, 
-					binaryLogWriter[LogCategory.LowLevelTransport] > 1 ? httpHeadersContent : null, 
+					LogMessageType.LowLevelTransport_SyncReceivingCompleted, null, null, null,
+					binaryLogWriter[LogCategory.LowLevelTransport] > 1 ? httpHeadersContent : null,
 					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 					-1, contentLength, socket.RemoteEndPoint.ToString(),
 					null, null,
@@ -1478,8 +1477,8 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				}
 
 				binaryLogWriter.WriteTransportContentEvent(LogCategory.LowLevelTransport, "XHttpConnectionManager.LowLevel_ParseHttpContent",
-					LogMessageType.LowLevelTransport_SyncReceivingCompleted, null, null, null, 
-					writeContent ? contentCopy : null, 
+					LogMessageType.LowLevelTransport_SyncReceivingCompleted, null, null, null,
+					writeContent ? contentCopy : null,
 					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 					-1, contentLength, socket.RemoteEndPoint.ToString(),
 					null, null,
@@ -1533,8 +1532,8 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 		{
 			try
 			{
-				BinaryFormatter binaryFormatter = new BinaryFormatter(new RemotingSurrogateSelector(), new StreamingContext(StreamingContextStates.Other));
-				Exception exception = binaryFormatter.Deserialize(stream) as Exception;
+				var binaryFormatter = new BinaryFormatter(new RemotingSurrogateSelector(), new StreamingContext(StreamingContextStates.Other)).Safe();
+				var exception = binaryFormatter.Deserialize(stream) as Exception;
 				if (exception == null)
 					return GenuineExceptions.Get_Receive_IncorrectData();
 				return exception;
@@ -1557,8 +1556,8 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 			{
 				binaryLogWriter.WriteEvent(LogCategory.Transport, "XHttpConnectionManager.LowLevel_HalfSync_Client_StartReceiving",
 					LogMessageType.ReceivingStarted, null, null, xHttpPhysicalConnection.Remote, null,
-					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
-					xHttpPhysicalConnection.ConnectionLevelSecurity, 
+					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
+					xHttpPhysicalConnection.ConnectionLevelSecurity,
 					xHttpPhysicalConnection.ConnectionLevelSecurity == null ? null : xHttpPhysicalConnection.ConnectionLevelSecurity.Name,
 					xHttpPhysicalConnection.XHttpConnection.DbgConnectionId, 0, 0, 0, null, null, null, null,
 					"The asynchronous receiving is initiated.");
@@ -1568,9 +1567,9 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 			xHttpPhysicalConnection.CheckConnectionStatus();
 
 			// and initiate receiving
-			AsyncThreadStarter.QueueTask(new Async_InitiateSocketReceiving(xHttpPhysicalConnection.Socket, 
-				this._unusedBuffer, 0, 
-				1, 
+			AsyncThreadStarter.QueueTask(new Async_InitiateSocketReceiving(xHttpPhysicalConnection.Socket,
+				this._unusedBuffer, 0,
+				1,
 				_HalfSync_Client_onEndReceiving, xHttpPhysicalConnection));
 		}
 
@@ -1607,8 +1606,8 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 		internal void LowLevel_HalfSync_Server_StartReceiving(Socket socket)
 		{
 			// initiate receiving
-			AsyncThreadStarter.QueueTask(new Async_InitiateSocketReceiving(socket, 
-				this._unusedBuffer, 0, 1, 
+			AsyncThreadStarter.QueueTask(new Async_InitiateSocketReceiving(socket,
+				this._unusedBuffer, 0, 1,
 				_HalfSync_Server_onEndReceiving, socket));
 		}
 
@@ -1649,8 +1648,8 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				if ( binaryLogWriter != null )
 				{
 					binaryLogWriter.WriteImplementationWarningEvent("XHttpConnectionManager.LowLevel_HalfSync_Server_EndReceiving",
-						LogMessageType.Error, ex, 
-						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+						LogMessageType.Error, ex,
+						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						"Something must be fixed...");
 				}
 			}
@@ -1702,7 +1701,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				{
 					binaryLogWriter.WriteConnectionParameterEvent(LogCategory.Connection, "XHttpConnectionManager.Pool_CreateConnection",
 						LogMessageType.ConnectionParameters, null, remote, this.ITransportContext.IParameterProvider,
-						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, xHttpConnection.DbgConnectionId, 
+						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, xHttpConnection.DbgConnectionId,
 						"An XHTTP connection is being established.");
 				}
 
@@ -1763,7 +1762,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 					// the CLSS content
 					clsseStream = new GenuineChunkedStream();
 					BinaryWriter binaryWriter = new BinaryWriter(clsseStream);
-					clssShouldBeSent = xHttpConnection.GatherContentOfConnectionLevelSecuritySessions(senderInputClsseStream, 
+					clssShouldBeSent = xHttpConnection.GatherContentOfConnectionLevelSecuritySessions(senderInputClsseStream,
 						listenerInputClsseStream, clsseStream, xHttpConnection.Sender.ConnectionLevelSecurity, xHttpConnection.Listener.ConnectionLevelSecurity);
 				}
 				else
@@ -1784,7 +1783,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 					HttpPacketType httpPacketType;
 					string receivedConnectionName;
 					int remoteHostUniqueIdentifier;
-					inputStream = this.LowLevel_ParseHttpContent(timeout, true, xHttpConnection.Sender.Socket, 
+					inputStream = this.LowLevel_ParseHttpContent(timeout, true, xHttpConnection.Sender.Socket,
 						xHttpConnection.Sender.ConnectionLevelSecurity, out protocolVersion, out remoteUri, out sequenceNo, out genuineConnectionType, out connectionId, out httpPacketType, out receivedConnectionName, out remoteHostUniqueIdentifier);
 
 					// check received items
@@ -1820,8 +1819,8 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 					{
 						binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.Pool_EstablishPersistentConnection",
 							LogMessageType.SynchronousSendingFinished, ex, null, remote, null,
-							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
-							xHttpConnection.Sender.ConnectionLevelSecurity, connectionLevelSSName, 
+							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
+							xHttpConnection.Sender.ConnectionLevelSecurity, connectionLevelSSName,
 							xHttpConnection.DbgConnectionId, 0, 0, 0, null, null, null, null,
 							"Cannot send the establishing packet to the remote host.");
 					}
@@ -1850,8 +1849,8 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 			{
 				binaryLogWriter.WriteHostInformationEvent("XHttpConnectionManager.Pool_EstablishPersistentConnection",
 					LogMessageType.HostInformationCreated, null, remote,
-					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
-					xHttpConnection.Sender.ConnectionLevelSecurity, connectionLevelSSName, 
+					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
+					xHttpConnection.Sender.ConnectionLevelSecurity, connectionLevelSSName,
 					xHttpConnection.DbgConnectionId,
 					"HostInformation is ready for actions.");
 			}
@@ -1864,8 +1863,8 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 			{
 				binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.Pool_EstablishPersistentConnection",
 					LogMessageType.ConnectionEstablished, null, null, xHttpConnection.Remote, null,
-					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
-					xHttpConnection.Sender.ConnectionLevelSecurity, connectionLevelSSName, 
+					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
+					xHttpConnection.Sender.ConnectionLevelSecurity, connectionLevelSSName,
 					xHttpConnection.DbgConnectionId, (int) GenuineConnectionType.Persistent, 0, 0, this.GetType().Name, remote.LocalPhysicalAddress.ToString(), remote.PhysicalAddress.ToString(), null,
 					"The connection to the remote host is established.");
 			}
@@ -1988,7 +1987,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.AcceptingConnection] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.AcceptingConnection, "XHttpConnectionManager.StartListening",
-						LogMessageType.ListeningStarted, null, null, null, null, 
+						LogMessageType.ListeningStarted, null, null, null, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						null, null, -1, 0, 0, 0, endPoint, null, null, null,
 						"A listening socket has been associated with the \"{0}\" local end point.", endPoint);
@@ -2004,7 +2003,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.AcceptingConnection] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.AcceptingConnection, "XHttpConnectionManager.StartListening",
-						LogMessageType.ListeningStarted, ex, null, null, null, 
+						LogMessageType.ListeningStarted, ex, null, null, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						null, null, -1, 0, 0, 0, endPoint, null, null, null,
 						"Can't associate a socket with the specified end point \"{0}\".", endPoint);
@@ -2059,7 +2058,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 			if ( binaryLogWriter != null && binaryLogWriter[LogCategory.AcceptingConnection] > 0 )
 			{
 				binaryLogWriter.WriteEvent(LogCategory.AcceptingConnection, "XHttpConnectionManager.StopListening",
-					LogMessageType.ListeningStopped, null, null, null, null, 
+					LogMessageType.ListeningStopped, null, null, null, null,
 					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 					null, null, -1, 0, 0, 0, endPoint, null, null, null,
 					"A listening socket is no longer associated with the \"{0}\" local end point.", endPoint);
@@ -2175,9 +2174,9 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				// LOG:
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
 					binaryLogWriter.WriteMessageCreatedEvent("XHttpConnectionManager.SendPing",
-						LogMessageType.MessageCreated, null, message, true, xHttpConnection.Remote, null, 
-						"HTTP PING", "HTTP PING", GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, xHttpConnection.DbgConnectionId, 
-						-1, null, -1, null, 
+						LogMessageType.MessageCreated, null, message, true, xHttpConnection.Remote, null,
+						"HTTP PING", "HTTP PING", GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, xHttpConnection.DbgConnectionId,
+						-1, null, -1, null,
 						"HTTP ping is created and sent.");
 
 				this.Send(message);
@@ -2187,7 +2186,7 @@ namespace Belikov.GenuineChannels.GenuineXHttp
 				// LOG:
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "XHttpConnectionManager.SendPing",
-						LogMessageType.ConnectionPingSending, ex, null, xHttpConnection.Remote, null, 
+						LogMessageType.ConnectionPingSending, ex, null, xHttpConnection.Remote, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, xHttpConnection.DbgConnectionId, 0, 0, 0, null, null, null, null,
 						"Cannot send a ping.");
 			}

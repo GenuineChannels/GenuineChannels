@@ -25,7 +25,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\DLL\UnitTests\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;FRM20;FRM40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -39,6 +39,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Zyan.SafeDeserializationHelpers">
+      <HintPath>..\packages\Zyan.SafeDeserializationHelpers.0.3.0\lib\net35\Zyan.SafeDeserializationHelpers.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UnitTests\GenuineUtilityTests.cs" />
@@ -49,6 +52,7 @@
     <Compile Include="UnitTests\RegressionTests.cs" />
     <Compile Include="UnitTests\AssemblyInfo.cs" />
     <Compile Include="UnitTests\RemoteServerTestBase.cs" />
+    <Compile Include="UnitTests\VulnerabilityTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sources\GenuineChannels.Desktop.v4.6.csproj">
@@ -58,6 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

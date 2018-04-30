@@ -1,27 +1,21 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
 using System;
-using System.Diagnostics;
-using System.Collections;
 using System.IO;
-using System.Security;
-using System.Security.Cryptography;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Channels;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
 using System.Threading;
 
-using Belikov.GenuineChannels.DotNetRemotingLayer;
 using Belikov.GenuineChannels.Logbook;
 using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.TransportContext;
 using Belikov.GenuineChannels.Utilities;
+using Zyan.SafeDeserializationHelpers;
 
 namespace Belikov.GenuineChannels.Security
 {
@@ -102,7 +96,7 @@ namespace Belikov.GenuineChannels.Security
 				return null;
 
 			GenuineChunkedStream outputStream = null;
-			BinaryFormatter binaryFormatter = new BinaryFormatter();
+			var binaryFormatter = new BinaryFormatter().Safe();
 
 			// skip the status flag
 			if (connectionLevel)
@@ -279,9 +273,9 @@ namespace Belikov.GenuineChannels.Security
 				if (binaryLogWriter != null && binaryLogWriter[LogCategory.Security] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Security, "SecuritySession_SelfEstablishingSymmetric.SessionEstablished",
-						LogMessageType.SecuritySessionKey, null, null, this.Remote, null, 
+						LogMessageType.SecuritySessionKey, null, null, this.Remote, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, this,
-						this.Name, -1, 
+						this.Name, -1,
 						0, 0, 0, "Encryption with " + rijndael.GetType().ToString(), null, null, null,
 						"Security Session security information is initialized.");
 				}

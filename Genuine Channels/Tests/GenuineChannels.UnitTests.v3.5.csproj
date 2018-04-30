@@ -25,7 +25,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\DLL\UnitTests35\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;FRM20;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -38,6 +38,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Zyan.SafeDeserializationHelpers">
+      <HintPath>..\packages\Zyan.SafeDeserializationHelpers.0.3.0\lib\net35\Zyan.SafeDeserializationHelpers.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UnitTests\GenuineUtilityTests.cs" />
@@ -48,6 +51,7 @@
     <Compile Include="UnitTests\RegressionTests.cs" />
     <Compile Include="UnitTests\AssemblyInfo.cs" />
     <Compile Include="UnitTests\RemoteServerTestBase.cs" />
+    <Compile Include="UnitTests\VulnerabilityTests.cs" />
     <Compile Include="UnitTests\Support\Tuple.cs" />
   </ItemGroup>
   <ItemGroup>

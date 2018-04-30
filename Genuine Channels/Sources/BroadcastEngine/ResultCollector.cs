@@ -1,28 +1,26 @@
 /* Genuine Channels product.
- * 
- * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved. 
- * 
+ *
+ * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
 using System;
 using System.Collections;
 using System.IO;
-using System.Threading;
-using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Messaging;
-using System.Runtime.Remoting.Proxies;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 
 using Belikov.Common.ThreadProcessing;
-
-using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.Logbook;
+using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.Receiving;
 using Belikov.GenuineChannels.TransportContext;
 using Belikov.GenuineChannels.Utilities;
+using Zyan.SafeDeserializationHelpers;
 
 namespace Belikov.GenuineChannels.BroadcastEngine
 {
@@ -91,7 +89,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 		public ManualResetEvent AllMessagesReceived = new ManualResetEvent(false);
 
 		/// <summary>
-		/// Represents a keyed collection containing receivers' uris of receivers that did not 
+		/// Represents a keyed collection containing receivers' uris of receivers that did not
 		/// respond to the send message.
 		/// Uri {string} => null.
 		/// </summary>
@@ -121,12 +119,12 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 
 				HostInformation dbgRemoteHost = (receiverInfo == null ? null : receiverInfo.DbgRemoteHost);
 				string numberOfFails = (receiverInfo == null ? string.Empty : receiverInfo.NumberOfFails.ToString());
-				
+
 				// LOG:
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 				{
 					binaryLogWriter.WriteBroadcastEngineEvent(LogCategory.BroadcastEngine, "ResultCollector.ParseResult",
-						LogMessageType.BroadcastResponseParsed, exception, null, dbgRemoteHost, null, 
+						LogMessageType.BroadcastResponseParsed, exception, null, dbgRemoteHost, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						null, null, false, this._dispatcher, this, false, receiverInfo,
 						numberOfFails, "false",
@@ -162,7 +160,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 					{
 						lock(receiverInfo)
 						{
-							if (receiverInfo.GeneralBroadcastSender == null && this._dispatcher.MaximumNumberOfConsecutiveFailsToExcludeReceiverAutomatically != 0 && 
+							if (receiverInfo.GeneralBroadcastSender == null && this._dispatcher.MaximumNumberOfConsecutiveFailsToExcludeReceiverAutomatically != 0 &&
 								receiverInfo.NumberOfFails >= this._dispatcher.MaximumNumberOfConsecutiveFailsToExcludeReceiverAutomatically)
 							{
 								// exclude it
@@ -181,9 +179,9 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 					if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 					{
 						HostInformation dbgRemoteHost = (receiverInfo == null ? null : receiverInfo.DbgRemoteHost);
-					
+
 						binaryLogWriter.WriteBroadcastEngineEvent(LogCategory.BroadcastEngine, "ResultCollector.ParseResult",
-							LogMessageType.BroadcastResponseParsed, null, null, dbgRemoteHost, null, 
+							LogMessageType.BroadcastResponseParsed, null, null, dbgRemoteHost, null,
 							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 							null, null, false, this._dispatcher, this, false, receiverInfo,
 							null, "true",
@@ -232,7 +230,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 				{
 					binaryLogWriter.WriteBroadcastEngineEvent(LogCategory.BroadcastEngine, "ResultCollector.StartReceiving",
-						LogMessageType.BroadcastInvocationCompleted, null, null, null, null, 
+						LogMessageType.BroadcastInvocationCompleted, null, null, null, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						null, null, false, this._dispatcher, this, false, null,
 						null, null,
@@ -273,7 +271,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 							}
 						}
 
-						if (this._dispatcher.MaximumNumberOfConsecutiveFailsToExcludeReceiverAutomatically != 0 && 
+						if (this._dispatcher.MaximumNumberOfConsecutiveFailsToExcludeReceiverAutomatically != 0 &&
 							numberOfFails >= this._dispatcher.MaximumNumberOfConsecutiveFailsToExcludeReceiverAutomatically)
 						{
 							this._dispatcher.Remove(uri);
@@ -302,7 +300,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 			if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 			{
 				binaryLogWriter.WriteBroadcastEngineEvent(LogCategory.BroadcastEngine, "ResultCollector.WaitUntilReceiversReplyOrTimeOut",
-					LogMessageType.BroadcastInvocationCompleted, null, null, null, null, 
+					LogMessageType.BroadcastInvocationCompleted, null, null, null, null,
 					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 					null, null, false, this._dispatcher, this, false, null,
 					null, null,
@@ -334,10 +332,10 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 				this._iMessage = msg;
 				methodName = BinaryLogWriter.ParseInvocationMethod(msg.Properties["__MethodName"] as string, msg.Properties["__TypeName"] as string);
 
-                BinaryFormatter formatterForLocalRecipients = null;
+				BinaryFormatter formatterForLocalRecipients = null;
 
 				// serialize the message
-				BinaryFormatter binaryFormatter = new BinaryFormatter(new RemotingSurrogateSelector(), new StreamingContext(StreamingContextStates.Other));
+				var binaryFormatter = new BinaryFormatter(new RemotingSurrogateSelector(), new StreamingContext(StreamingContextStates.Other)).Safe();
 				this._messageStream = new GenuineChunkedStream(false);
 				binaryFormatter.Serialize(this._messageStream, msg);
 
@@ -350,8 +348,8 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 				{
 					binaryLogWriter.WriteBroadcastEngineEvent(LogCategory.BroadcastEngine, "ResultCollector.PerformBroadcasting",
-						LogMessageType.BroadcastInvocationInitiated, null, null, null, 
-						binaryLogWriter[LogCategory.BroadcastEngine] > 1 ? (Stream) this._messageStream.Clone() : null, 
+						LogMessageType.BroadcastInvocationInitiated, null, null, null,
+						binaryLogWriter[LogCategory.BroadcastEngine] > 1 ? (Stream) this._messageStream.Clone() : null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						null, null, true, this._dispatcher, this, false, null,
 						methodName, null,
@@ -378,7 +376,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 					{
 						lock (receiverInfo)
 						{
-							if (this._dispatcher.MaximumNumberOfConsecutiveFailsToExcludeReceiverAutomatically != 0 && 
+							if (this._dispatcher.MaximumNumberOfConsecutiveFailsToExcludeReceiverAutomatically != 0 &&
 								receiverInfo.NumberOfFails >= this._dispatcher.MaximumNumberOfConsecutiveFailsToExcludeReceiverAutomatically)
 							{
 								// put it to the list containing receivers being excluded
@@ -397,7 +395,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 						}
 
 						if (receiverInfo.Local)
-						{	
+						{
 							// call to local appdomain
 							// ignore recurrent calls
 							if (this._dispatcher.IgnoreRecurrentCalls && UniqueCallTracer.Instance.WasGuidRegistered(mbrUri + callGuidSubstring))
@@ -410,7 +408,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 							if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 							{
 								binaryLogWriter.WriteBroadcastEngineEvent(LogCategory.BroadcastEngine, "ResultCollector.PerformBroadcasting",
-									LogMessageType.BroadcastRecipientInvoked, null, null, null, null, 
+									LogMessageType.BroadcastRecipientInvoked, null, null, null, null,
 									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 									null, null, false, this._dispatcher, this, false, receiverInfo,
 									null, null,
@@ -418,7 +416,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 							}
 
                             if (formatterForLocalRecipients == null)
-                                formatterForLocalRecipients = new BinaryFormatter();
+                                formatterForLocalRecipients = new BinaryFormatter().Safe();
 
                             // fixed in 2.5.9.6
                             IMessage iLocalMessage = (IMessage)formatterForLocalRecipients.Deserialize((Stream)this._messageStream.Clone());
@@ -429,7 +427,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 							GenuineThreadPool.QueueUserWorkItem(new WaitCallback(localPerformer.Call), null, false);
 						}
 						else if (receiverInfo.GeneralBroadcastSender != null)
-						{	
+						{
 							// call via true multicast channel
 							Stream messageToBeSent = (Stream) this._messageStream.Clone();
 
@@ -450,7 +448,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 								message.ITransportHeaders[Message.TransportHeadersMethodName] = methodName;
 
 								binaryLogWriter.WriteBroadcastEngineEvent(LogCategory.BroadcastEngine, "ResultCollector.PerformBroadcasting",
-									LogMessageType.BroadcastRecipientInvoked, null, null, null, null, 
+									LogMessageType.BroadcastRecipientInvoked, null, null, null, null,
 									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 									null, null, false, this._dispatcher, this, false, receiverInfo,
 									null, null,
@@ -463,7 +461,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 							receiverInfo.GeneralBroadcastSender.SendMessage(message, this);
 						}
 						else
-						{	
+						{
 							// send the invocation through the usual channel
 							// we'll wait for the reply
 							this.UnrepliedReceivers[mbrUri] = null;
@@ -483,7 +481,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 								if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 								{
 									binaryLogWriter.WriteBroadcastEngineEvent(LogCategory.BroadcastEngine, "ResultCollector.PerformBroadcasting",
-										LogMessageType.BroadcastRecipientInvoked, null, null, receiverInfo.DbgRemoteHost, null, 
+										LogMessageType.BroadcastRecipientInvoked, null, null, receiverInfo.DbgRemoteHost, null,
 										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 										null, null, false, this._dispatcher, this, false, receiverInfo,
 										null, null,
@@ -528,7 +526,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.BroadcastEngine] > 0 )
 				{
 					binaryLogWriter.WriteBroadcastEngineEvent(LogCategory.BroadcastEngine, "ResultCollector.PerformBroadcasting",
-						LogMessageType.BroadcastInvocationInitiated, ex, null, null, null, 
+						LogMessageType.BroadcastInvocationInitiated, ex, null, null, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						null, null, false, this._dispatcher, this, false, null,
 						invocationTarget, methodName,
@@ -575,7 +573,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 							lock(receiverInfo)
 							{
 								receiverInfo.NumberOfMulticastFails++;
-								if (this._dispatcher.MaximumNumberOfConsecutiveFailsToEnableSimulationMode != 0 && 
+								if (this._dispatcher.MaximumNumberOfConsecutiveFailsToEnableSimulationMode != 0 &&
 									receiverInfo.NumberOfMulticastFails >= this._dispatcher.MaximumNumberOfConsecutiveFailsToEnableSimulationMode)
 								{
 									// force simulation
@@ -595,7 +593,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 								string invocationTarget = receiverInfo.MbrUri;
 
 								binaryLogWriter.WriteBroadcastEngineEvent(LogCategory.BroadcastEngine, "ResultCollector.SendMessageToFailedReceiversDirectly",
-									LogMessageType.BroadcastRecipientInvokedAfterTimeout, null, null, receiverInfo.DbgRemoteHost, null, 
+									LogMessageType.BroadcastRecipientInvokedAfterTimeout, null, null, receiverInfo.DbgRemoteHost, null,
 									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 									null, null, false, this._dispatcher, this, false, receiverInfo,
 									invocationTarget, methodName,
@@ -649,7 +647,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 
 			try
 			{
-				BinaryFormatter binaryFormatter = new BinaryFormatter();
+				var binaryFormatter = new BinaryFormatter().Safe();
 				object reply = binaryFormatter.Deserialize(message.Stream);
 				this.ParseResult(objectUri, reply as IMethodReturnMessage, reply as Exception);
 			}
@@ -681,8 +679,8 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 		/// <summary>
 		/// Gets the uri of the remote host which is expected to send a response.
 		/// </summary>
-		public HostInformation Remote 
-		{ 
+		public HostInformation Remote
+		{
 			get
 			{
 				return null;
@@ -692,8 +690,8 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 		/// <summary>
 		/// Gets an indication whether the response processor does not require a separate thread for processing.
 		/// </summary>
-		public bool IsShortInProcessing 
-		{ 
+		public bool IsShortInProcessing
+		{
 			get
 			{
 				// deserialization & locking may take noticable time
@@ -706,7 +704,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 		/// the source message.
 		/// </summary>
 		public Message Message
-		{ 
+		{
 			get
 			{
 				return null;
@@ -720,7 +718,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 		/// <summary>
 		/// Gets a dictionary through which sink properties can be accessed.
 		/// </summary>
-		public IDictionary Properties 
+		public IDictionary Properties
 		{
 			get
 			{
@@ -746,7 +744,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 		/// <param name="msg">The message to process.</param>
 		/// <param name="headers">The headers to add to the outgoing message heading to the server.</param>
 		/// <param name="stream">The stream headed to the transport sink.</param>
-		public void AsyncProcessRequest(IClientChannelSinkStack sinkStack, IMessage msg, 
+		public void AsyncProcessRequest(IClientChannelSinkStack sinkStack, IMessage msg,
 			ITransportHeaders headers, Stream stream)
 		{
 			return ;
@@ -772,11 +770,11 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 			try
 			{
 				mbrUri = (string) headers[Message.TransportHeadersMbrUriName];
-				BinaryFormatter binaryFormatter = new BinaryFormatter();
+				var binaryFormatter = new BinaryFormatter().Safe();
 				iMethodReturnMessage = (IMethodReturnMessage) binaryFormatter.Deserialize(stream);
 				this.ParseResult(mbrUri, iMethodReturnMessage, null);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				if (mbrUri != null)
 					this.ParseResult(mbrUri, null, ex);
@@ -816,7 +814,7 @@ namespace Belikov.GenuineChannels.BroadcastEngine
 		/// <summary>
 		/// Gets the next message sink in the sink chain.
 		/// </summary>
-		public IMessageSink NextSink 
+		public IMessageSink NextSink
 		{
 			get
 			{

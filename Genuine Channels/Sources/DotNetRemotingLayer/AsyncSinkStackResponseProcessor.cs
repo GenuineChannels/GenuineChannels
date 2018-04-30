@@ -1,21 +1,20 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
 using System;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Remoting.Messaging;
-using System.Runtime.Serialization;
 using System.Threading;
 
+using Belikov.GenuineChannels.Logbook;
 using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.Receiving;
-using Belikov.GenuineChannels.Logbook;
 using Belikov.GenuineChannels.TransportContext;
+using Zyan.SafeDeserializationHelpers;
 
 namespace Belikov.GenuineChannels.DotNetRemotingLayer
 {
@@ -69,14 +68,14 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 			{
 				try
 				{
-					BinaryFormatter binaryFormatter = new BinaryFormatter();
-					Exception exception = (Exception) binaryFormatter.Deserialize(message.Stream);
+					var binaryFormatter = new BinaryFormatter().Safe();
+					var exception = (Exception) binaryFormatter.Deserialize(message.Stream);
 
 					// LOG: put down the log record
 					if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
 						binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "AsyncSinkStackResponseProcessor.ProcessRespose",
-							LogMessageType.MessageDispatched, exception, message, message.Sender, null, 
-							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, -1, 
+							LogMessageType.MessageDispatched, exception, message, message.Sender, null,
+							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, -1,
 							GenuineUtility.TickCount, 0, this._message.SeqNo, null, null, null, null,
 							"The exception received as a response to the asynchronous message is dispatched back to the caller context.");
 
@@ -87,8 +86,8 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 					// LOG: put down the log record
 					if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
 						binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "AsyncSinkStackResponseProcessor.ProcessRespose",
-							LogMessageType.MessageDispatched, ex, message, message.Sender, null, 
-							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, -1, 
+							LogMessageType.MessageDispatched, ex, message, message.Sender, null,
+							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, -1,
 							GenuineUtility.TickCount, 0, this._message.SeqNo, null, null, null, null,
 							"The received exception cannot be deserialized. This exception is dispatched instead.");
 
@@ -100,8 +99,8 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 				// LOG: put down the log record
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
 					binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "AsyncSinkStackResponseProcessor.ProcessRespose",
-						LogMessageType.MessageDispatched, null, message, message.Sender, null, 
-						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, -1, 
+						LogMessageType.MessageDispatched, null, message, message.Sender, null,
+						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, -1,
 						GenuineUtility.TickCount, 0, this._message.SeqNo, null, null, null, null,
 						"The response to the asynchronous message is dispatched back to the caller context.");
 
@@ -149,7 +148,7 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 		/// Gets the uri of the remote host expected to send a response.
 		/// </summary>
 		public HostInformation Remote
-		{ 
+		{
 			get
 			{
 				return this._message.Recipient;
@@ -159,8 +158,8 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 		/// <summary>
 		/// Gets an indication whether the response processor does not require a separate thread for processing.
 		/// </summary>
-		public bool IsShortInProcessing 
-		{ 
+		public bool IsShortInProcessing
+		{
 			get
 			{
 				return false;
@@ -172,7 +171,7 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 		/// the source message.
 		/// </summary>
 		public Message Message
-		{ 
+		{
 			get
 			{
 				return this._message;

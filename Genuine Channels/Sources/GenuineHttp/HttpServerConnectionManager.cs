@@ -1,7 +1,7 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
@@ -9,18 +9,11 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.Remoting;
-using System.Runtime.Remoting.Channels;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Security.Principal;
-using System.Text;
-using System.Threading;
-using System.Web;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
+using System.Web;
 
 using Belikov.Common.ThreadProcessing;
 using Belikov.GenuineChannels.BufferPooling;
@@ -33,6 +26,7 @@ using Belikov.GenuineChannels.Receiving;
 using Belikov.GenuineChannels.Security;
 using Belikov.GenuineChannels.TransportContext;
 using Belikov.GenuineChannels.Utilities;
+using Zyan.SafeDeserializationHelpers;
 
 namespace Belikov.GenuineChannels.GenuineHttp
 {
@@ -106,7 +100,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 
 											binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "HttpServerConnectionManager.InternalSend",
 												LogMessageType.MessageIsSentAsynchronously, null, nextMessage, httpServerConnection.Remote, null,
-												GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpServerConnection.Listener_SecuritySession, 
+												GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpServerConnection.Listener_SecuritySession,
 												null,
 												httpServerConnection.DbgConnectionId, httpServerConnection.Listener_SequenceNo, 0, 0, null, null, null, null,
 												"The message will be sent in the LISTENER stream N: {0}.", httpServerConnection.Listener_SequenceNo);
@@ -228,7 +222,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 					}
 
 					binaryLogWriter.WriteTransportContentEvent(LogCategory.LowLevelTransport, "HttpServerConnectionManager.HandleIncomingRequest",
-						LogMessageType.LowLevelTransport_AsyncReceivingCompleted, null, null, null, 
+						LogMessageType.LowLevelTransport_AsyncReceivingCompleted, null, null, null,
 						writeContent ? content : null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, -1, (int) httpServerRequestResult.HttpContext.Request.ContentLength,
 						httpServerRequestResult.HttpContext.Request.UserHostAddress,
@@ -263,8 +257,8 @@ namespace Belikov.GenuineChannels.GenuineHttp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "HttpServerConnectionManager.HandleIncomingRequest",
-						LogMessageType.ReceivingFinished, null, null, remote, null, 
-						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, -1, 
+						LogMessageType.ReceivingFinished, null, null, remote, null,
+						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, -1,
 						0, 0, 0, null, null, null, null,
 						"HTTP request is being processed. Packet type: {0}. Sequence no: {1}. Content length: {2}. Host address: {3}.",
 						Enum.Format(typeof(HttpPacketType), httpPacketType, "g"), sequenceNo, httpRequest.ContentLength, httpRequest.UserHostAddress);
@@ -298,14 +292,14 @@ namespace Belikov.GenuineChannels.GenuineHttp
 							if (httpServerConnection == null)
 							{
 								// create the new connection
-								httpServerConnection = new HttpServerConnection(this.ITransportContext, hostId, remote, connectionName, 
+								httpServerConnection = new HttpServerConnection(this.ITransportContext, hostId, remote, connectionName,
 									GenuineUtility.ConvertToMilliseconds(this.ITransportContext.IParameterProvider[GenuineParameter.ClosePersistentConnectionAfterInactivity]) + GenuineUtility.ConvertToMilliseconds(this.ITransportContext.IParameterProvider[GenuineParameter.MaxTimeSpanToReconnect]));
 
 								if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 								{
 									binaryLogWriter.WriteConnectionParameterEvent(LogCategory.Connection, "HttpServerConnectionManager.HandleIncomingRequest",
 										LogMessageType.ConnectionParameters, null, remote, this.ITransportContext.IParameterProvider,
-										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpServerConnection.DbgConnectionId, 
+										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpServerConnection.DbgConnectionId,
 										"HTTP connection is being established.");
 								}
 
@@ -332,10 +326,10 @@ namespace Belikov.GenuineChannels.GenuineHttp
 								// LOG:
 								if ( binaryLogWriter != null && binaryLogWriter[LogCategory.HostInformation] > 0 )
 								{
-									binaryLogWriter.WriteHostInformationEvent("HttpServerConnectionManager.HandleIncomingRequest", 
-										LogMessageType.HostInformationCreated, null, remote, 
-										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpServerConnection.Sender_SecuritySession, 
-										securitySessionName, httpServerConnection.DbgConnectionId, 
+									binaryLogWriter.WriteHostInformationEvent("HttpServerConnectionManager.HandleIncomingRequest",
+										LogMessageType.HostInformationCreated, null, remote,
+										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpServerConnection.Sender_SecuritySession,
+										securitySessionName, httpServerConnection.DbgConnectionId,
 										"HostInformation is ready for actions.");
 								}
 
@@ -401,8 +395,8 @@ namespace Belikov.GenuineChannels.GenuineHttp
 								if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 								{
 									binaryLogWriter.WriteEvent(LogCategory.Connection, "HttpServerConnectionManager.HandleIncomingRequest",
-										LogMessageType.Error, GenuineExceptions.Get_Debugging_GeneralWarning("Unexpected type of the packet."), null, remote, null, 
-										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, httpServerConnection == null ? -1 : httpServerConnection.DbgConnectionId, 
+										LogMessageType.Error, GenuineExceptions.Get_Debugging_GeneralWarning("Unexpected type of the packet."), null, remote, null,
+										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, httpServerConnection == null ? -1 : httpServerConnection.DbgConnectionId,
 										0, 0, 0, null, null, null, null,
 										"Unexpected type of the packet. Packet type: {0}. Sequence no: {1}. Content length: {2}. Host address: {3}.",
 										Enum.Format(typeof(HttpPacketType), httpPacketType, "g"), sequenceNo, httpRequest.ContentLength, httpRequest.UserHostAddress);
@@ -429,8 +423,8 @@ namespace Belikov.GenuineChannels.GenuineHttp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "HttpServerConnectionManager.HandleIncomingRequest",
-						LogMessageType.ReceivingFinished, ex, null, null, null, 
-						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, -1, 
+						LogMessageType.ReceivingFinished, ex, null, null, null,
+						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, -1,
 						0, 0, 0, null, null, null, null,
 						"Error occurred while processing incoming HTTP request.");
 				}
@@ -553,7 +547,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 
 							binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "HttpServerConnectionManager.LowLevel_ProcessListenerRequest",
 								LogMessageType.MessageIsSentAsynchronously, null, nextMessage, httpServerConnection.Remote, null,
-								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpServerConnection.Listener_SecuritySession, 
+								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpServerConnection.Listener_SecuritySession,
 								null,
 								httpServerConnection.DbgConnectionId, httpServerConnection.Listener_SequenceNo, 0, 0, null, null, null, null,
 								"The message is sent in the LISTENER stream N: {0}.", httpServerConnection.Listener_SequenceNo);
@@ -641,14 +635,14 @@ namespace Belikov.GenuineChannels.GenuineHttp
 						{
 							gotException = OperationException.WrapException(gotException);
 							outputStream = this.LowLevel_CreateStreamWithHeader(HttpPacketType.SenderError, sequenceNo, remote);
-							BinaryFormatter binaryFormatter = new BinaryFormatter(new RemotingSurrogateSelector(), new StreamingContext(StreamingContextStates.Other));
+							var binaryFormatter = new BinaryFormatter(new RemotingSurrogateSelector(), new StreamingContext(StreamingContextStates.Other)).Safe();
 							binaryFormatter.Serialize(outputStream, gotException);
 						}
 						else
 						{
 							// serialize and send the empty response
 							outputStream = this.LowLevel_CreateStreamWithHeader(HttpPacketType.SenderResponse, sequenceNo, remote);
-							MessageCoder.FillInLabelledStream(null, null, null, outputStream, 
+							MessageCoder.FillInLabelledStream(null, null, null, outputStream,
 								bufferKeeper.Buffer, (int) this.ITransportContext.IParameterProvider[GenuineParameter.HttpRecommendedPacketSize]);
 						}
 						break;
@@ -666,7 +660,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 								{
 									binaryLogWriter.WriteImplementationWarningEvent("HttpServerConnectionManager.LowLevel_ProcessSenderRequest", LogMessageType.Error,
 										GenuineExceptions.Get_Debugging_GeneralWarning("The invocation request doesn't contain any messages."),
-										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 										"The invocation request doesn't contain any messages.");
 								}
 							}
@@ -685,7 +679,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 								{
 									binaryLogWriter.WriteImplementationWarningEvent("HttpServerConnectionManager.LowLevel_ProcessSenderRequest", LogMessageType.Error,
 										GenuineExceptions.Get_Debugging_GeneralWarning("The invocation request must not contain more than one message."),
-										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+										GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 										"The invocation request must not contain more than one message.");
 								}
 							}
@@ -693,7 +687,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 							// if there is a response, serialize it
 							outputStream = this.LowLevel_CreateStreamWithHeader(HttpPacketType.Usual, sequenceNo, remote);
 							Message message = this._invocation[connectionGuid] as Message;
-							MessageCoder.FillInLabelledStream(message, null, null, outputStream, 
+							MessageCoder.FillInLabelledStream(message, null, null, outputStream,
 								bufferKeeper.Buffer, (int) this.ITransportContext.IParameterProvider[GenuineParameter.HttpRecommendedPacketSize]);
 						}
 						finally
@@ -792,13 +786,13 @@ namespace Belikov.GenuineChannels.GenuineHttp
 					}
 
 					binaryLogWriter.WriteTransportContentEvent(LogCategory.LowLevelTransport, "HttpServerConnectionManager.LowLevel_SendStream",
-						LogMessageType.LowLevelTransport_AsyncSendingInitiating, null, null, httpServerConnectionForDebugging.Remote, 
+						LogMessageType.LowLevelTransport_AsyncSendingInitiating, null, null, httpServerConnectionForDebugging.Remote,
 						copiedContent,
-						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpServerConnectionForDebugging.DbgConnectionId, 
+						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpServerConnectionForDebugging.DbgConnectionId,
 						(int) content.Length, null, null, null,
 						"Response is sent back to the client. Buffer: {0}; BufferOutput: {1}; Charset: {2}; ContentEncoding: {3}; ContentType: {4}; IsClientConnected: {5}; StatusCode: {6}; StatusDescription: {7}; SuppressContent: {8}; Content-Length: {9}. Connection: {10}.",
-						response.Buffer, response.BufferOutput, response.Charset, 
-						response.ContentEncoding, response.ContentType, response.IsClientConnected, 
+						response.Buffer, response.BufferOutput, response.Charset,
+						response.ContentEncoding, response.ContentType, response.IsClientConnected,
 						response.StatusCode, response.StatusDescription, response.SuppressContent,
 						contentLength, listener ? "LISTENER" : "SENDER");
 				}
@@ -942,7 +936,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "HttpServerConnectionManager.ReleaseConnections",
-						LogMessageType.ReleaseConnections, reason, null, hostInformation, null, 
+						LogMessageType.ReleaseConnections, reason, null, hostInformation, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						null, null, -1, 0, 0, 0, Enum.Format(typeof(GenuineConnectionType), genuineConnectionType, "g"), null, null, null,
 						"Connections \"{0}\" will be terminated.", Enum.Format(typeof(GenuineConnectionType), genuineConnectionType, "g"), null);

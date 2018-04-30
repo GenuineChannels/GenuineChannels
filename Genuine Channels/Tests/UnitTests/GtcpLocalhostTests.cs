@@ -7,7 +7,6 @@ namespace GenuineChannels.UnitTests.UnitTests
 	[TestClass]
 	public class GtcpLocalhostTests: RemoteServerTestBase
 	{
-
 		#region Test Setup
 		public GtcpLocalhostTests()
 			: base(GcChannelType.GTCP, () => new Service(), IpVersion.IPv4)
@@ -34,7 +33,7 @@ namespace GenuineChannels.UnitTests.UnitTests
 		public interface IService
 		{
 			string Greeting(string s);
-		} 
+		}
 
 		#endregion
 

@@ -1,28 +1,20 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
 using System;
-using System.Collections;
-using System.Diagnostics;
 using System.IO;
-using System.Security;
-using System.Security.Cryptography;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Remoting.Channels;
 using System.Threading;
-using System.Runtime.Remoting.Messaging;
-using System.Runtime.Serialization;
 
-using Belikov.GenuineChannels;
 using Belikov.GenuineChannels.DotNetRemotingLayer;
 using Belikov.GenuineChannels.Logbook;
 using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.TransportContext;
-using Belikov.GenuineChannels.Utilities;
+using Zyan.SafeDeserializationHelpers;
 
 namespace Belikov.GenuineChannels.Security.ZeroProofAuthorization
 {
@@ -71,7 +63,7 @@ namespace Belikov.GenuineChannels.Security.ZeroProofAuthorization
 				return null;
 
 			GenuineChunkedStream outputStream = null;
-			BinaryFormatter binaryFormatter = new BinaryFormatter();
+			var binaryFormatter = new BinaryFormatter().Safe();
 
 			// skip the status flag
 			if (connectionLevel)
@@ -105,9 +97,9 @@ namespace Belikov.GenuineChannels.Security.ZeroProofAuthorization
 					if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Security] > 0 )
 					{
 						binaryLogWriter.WriteEvent(LogCategory.Security, "SecuritySession_ZpaClient.EstablishSession",
-							LogMessageType.SecuritySessionEstablishing, null, null, this.Remote, null, 
+							LogMessageType.SecuritySessionEstablishing, null, null, this.Remote, null,
 							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
-							this, this.Name, -1, 
+							this, this.Name, -1,
 							0, 0, 0, Enum.Format(typeof(ZpaPacketStatusFlag), zpaPacketStatusFlag, "g"), null, null, null,
 							"ZPA Client Session is being established. Status: {0}.", Enum.Format(typeof(ZpaPacketStatusFlag), zpaPacketStatusFlag, "g"));
 					}

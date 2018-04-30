@@ -1,7 +1,7 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
@@ -10,27 +10,23 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Net.Sockets;
-using System.Runtime.Remoting;
-using System.Runtime.Remoting.Messaging;
 using System.Runtime.Remoting.Channels;
-using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
-using System.Runtime.Serialization;
 
 using Belikov.Common.ThreadProcessing;
-using Belikov.GenuineChannels.BufferPooling;
 using Belikov.GenuineChannels.Connection;
 using Belikov.GenuineChannels.DotNetRemotingLayer;
 using Belikov.GenuineChannels.Logbook;
 using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.Parameters;
-using Belikov.GenuineChannels.Receiving;
 using Belikov.GenuineChannels.Security;
 using Belikov.GenuineChannels.TransportContext;
 using Belikov.GenuineChannels.Utilities;
+using Zyan.SafeDeserializationHelpers;
 
 namespace Belikov.GenuineChannels.GenuineHttp
 {
@@ -243,10 +239,10 @@ namespace Belikov.GenuineChannels.GenuineHttp
 					}
 
 					binaryLogWriter.WriteTransportContentEvent(LogCategory.LowLevelTransport, "HttpClientConnectionManager.Pool_Sender_OnEndSending",
-						LogMessageType.AsynchronousSendingFinished, null, null, httpClientConnection.Remote, 
+						LogMessageType.AsynchronousSendingFinished, null, null, httpClientConnection.Remote,
 						binaryLogWriter[LogCategory.LowLevelTransport] > 1 ? content : null,
-						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpClientConnection.DbgConnectionId, 
-						(int) httpWebResponse.ContentLength, null, null, null, 
+						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpClientConnection.DbgConnectionId,
+						(int) httpWebResponse.ContentLength, null, null, null,
 						"The content of the response received by the sender connection.");
 
 					if (binaryLogWriter[LogCategory.Transport] > 1)
@@ -269,7 +265,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 				{
 					binaryLogWriter.WriteEvent(LogCategory.LowLevelTransport, "HttpClientConnectionManager.Pool_Sender_OnEndSending",
 						LogMessageType.LowLevelTransport_AsyncSendingCompleted, null, null, httpClientConnection.Remote, null,
-						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpClientConnection.Sender_ConnectionLevelSecurity, 
+						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpClientConnection.Sender_ConnectionLevelSecurity,
 						httpClientConnection.Sender_ConnectionLevelSecurity == null ? null : httpClientConnection.Sender_ConnectionLevelSecurity.Name,
 						httpClientConnection.DbgConnectionId, (int) httpPacketType, sequenceNo, 0, null, null, null, null,
 						"SENDER invocation completed. Type of the packet: {0}. Server Uri: {1}. Seq No: {2}",
@@ -288,7 +284,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 
 					try
 					{
-						BinaryFormatter binaryFormatter = new BinaryFormatter(new RemotingSurrogateSelector(), new StreamingContext(StreamingContextStates.Other));
+						var binaryFormatter = new BinaryFormatter(new RemotingSurrogateSelector(), new StreamingContext(StreamingContextStates.Other)).Safe();
 						deserializedException = binaryFormatter.Deserialize(inputStream) as Exception;
 					}
 					catch
@@ -316,7 +312,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Debugging, "HttpClientConnectionManager.Pool_Sender_OnEndSending",
 						LogMessageType.DebuggingSuccess, null, null, httpClientConnection.Remote, null,
-						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpClientConnection.Sender_ConnectionLevelSecurity, 
+						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpClientConnection.Sender_ConnectionLevelSecurity,
 						null,
 						httpClientConnection.DbgConnectionId, -1, -1, -1, null, null, null, null,
 						"HttpClientConnectionManager.Pool_Sender_OnEndSending is completed.");
@@ -377,10 +373,10 @@ namespace Belikov.GenuineChannels.GenuineHttp
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "HttpClientConnectionManager.ConnectionFailed",
 						LogMessageType.ConnectionFailed, exception, null, httpClientConnection.Remote, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
-						httpClientConnection.DbgConnectionId, 
+						httpClientConnection.DbgConnectionId,
 						0, 0, 0, null, null, null, null,
-						"Connection failure. Sender: {0}. Connection type: {1}. Try to reestablish: {2}.", 
-						sender.ToString(), Enum.GetName(typeof(GenuineConnectionType), httpClientConnection.GenuineConnectionType), 
+						"Connection failure. Sender: {0}. Connection type: {1}. Try to reestablish: {2}.",
+						sender.ToString(), Enum.GetName(typeof(GenuineConnectionType), httpClientConnection.GenuineConnectionType),
 						tryToReestablish.ToString());
 				}
 
@@ -423,10 +419,10 @@ namespace Belikov.GenuineChannels.GenuineHttp
 							binaryLogWriter.WriteEvent(LogCategory.Connection, "HttpClientConnectionManager.ConnectionFailed",
 								LogMessageType.ConnectionFailed, exception, null, httpClientConnection.Remote, null,
 								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
-								httpClientConnection.DbgConnectionId, 
+								httpClientConnection.DbgConnectionId,
 								0, 0, 0, null, null, null, null,
-								"The connection has been completely terminated and removed from all collection. Sender: {0}. Connection type: {1}. Try to reestablish: {2}.", 
-								sender.ToString(), Enum.GetName(typeof(GenuineConnectionType), httpClientConnection.GenuineConnectionType), 
+								"The connection has been completely terminated and removed from all collection. Sender: {0}. Connection type: {1}. Try to reestablish: {2}.",
+								sender.ToString(), Enum.GetName(typeof(GenuineConnectionType), httpClientConnection.GenuineConnectionType),
 								tryToReestablish.ToString());
 						}
 
@@ -447,7 +443,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 									LogMessageType.ConnectionReestablishing, GenuineExceptions.Get_Debugging_GeneralWarning("Connection was not reestablished within the specified time boundaries."),
 									null, httpClientConnection.Remote, null,
 									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
-									httpClientConnection.DbgConnectionId, 
+									httpClientConnection.DbgConnectionId,
 									0, 0, 0, null, null, null, null,
 									"The connection has not been reestablished within the specified time boundaries.");
 							}
@@ -592,7 +588,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "HttpClientConnectionManager.SendPing",
 						LogMessageType.ConnectionPingSending, null, null, httpClientConnection.Remote, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
-						httpClientConnection.DbgConnectionId, 
+						httpClientConnection.DbgConnectionId,
 						0, 0, 0, null, null, null, null,
 						"Sending a ping.");
 				}
@@ -608,10 +604,10 @@ namespace Belikov.GenuineChannels.GenuineHttp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "HttpClientConnectionManager.SendPing",
-						LogMessageType.ConnectionPingSending, ex, null, 
+						LogMessageType.ConnectionPingSending, ex, null,
 						httpClientConnection == null ? null : httpClientConnection.Remote, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
-						httpClientConnection == null ? -1 : httpClientConnection.DbgConnectionId, 
+						httpClientConnection == null ? -1 : httpClientConnection.DbgConnectionId,
 						0, 0, 0, null, null, null, null,
 						"Exception occurred while sending a ping.");
 				}
@@ -675,9 +671,9 @@ namespace Belikov.GenuineChannels.GenuineHttp
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "HttpClientConnectionManager.ReestablishFailedConnection",
 						LogMessageType.ConnectionReestablishing, null, null, httpClientConnection.Remote, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
-						httpClientConnection.DbgConnectionId, 
+						httpClientConnection.DbgConnectionId,
 						0, 0, 0, null, null, null, null,
-						"Reestablishing the {0} HTTP connection. System.Net.ServicePointManager.DefaultConnectionLimit = {1}.", 
+						"Reestablishing the {0} HTTP connection. System.Net.ServicePointManager.DefaultConnectionLimit = {1}.",
 						failedHttpRequest.Sender ? "SENDER" : "LISTENER",
 						System.Net.ServicePointManager.DefaultConnectionLimit);
 				}
@@ -711,7 +707,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 							binaryLogWriter.WriteEvent(LogCategory.Debugging, "HttpClientConnectionManager.ReestablishFailedConnection",
 								LogMessageType.DebuggingWarning, null, null, httpClientConnection.Remote, null,
 								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
-								httpClientConnection.DbgConnectionId, 
+								httpClientConnection.DbgConnectionId,
 								0, 0, 0, null, null, null, null,
 								"Reestablishing the {0} attempt #{1}", failedHttpRequest.Sender ? "SENDER" : "LISTENER", i);
 						}
@@ -727,9 +723,9 @@ namespace Belikov.GenuineChannels.GenuineHttp
 								binaryLogWriter.WriteEvent(LogCategory.Debugging, "HttpClientConnectionManager.ReestablishFailedConnection",
 									LogMessageType.DebuggingWarning, null, null, httpClientConnection.Remote, null,
 									GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
-									httpClientConnection.DbgConnectionId, 
+									httpClientConnection.DbgConnectionId,
 									0, 0, 0, null, null, null, null,
-									"Reestablishing the {0} attempt N{1} RESULT: {2}", 
+									"Reestablishing the {0} attempt N{1} RESULT: {2}",
 									failedHttpRequest.Sender ? "SENDER" : "LISTENER", i, reconnectionContainer.RequestFailed ? "FAILURE" : "SUCCESS");
 							}
 
@@ -749,9 +745,9 @@ namespace Belikov.GenuineChannels.GenuineHttp
 							binaryLogWriter.WriteEvent(LogCategory.Connection, "HttpClientConnectionManager.ReestablishFailedConnection",
 								LogMessageType.ConnectionReestablishing, ex, null, httpClientConnection.Remote, null,
 								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
-								httpClientConnection.DbgConnectionId, 
+								httpClientConnection.DbgConnectionId,
 								0, 0, 0, null, null, null, null,
-								"Reestablishing attempt failed. Reestablishing the {0} HTTP connection will be continued. Try: {1}. Milliseconds left: {2}", 
+								"Reestablishing attempt failed. Reestablishing the {0} HTTP connection will be continued. Try: {1}. Milliseconds left: {2}",
 								failedHttpRequest.Sender ? "SENDER" : "LISTENER",
 								i, GenuineUtility.CompareTickCounts(reconnectionMustBeFinishedBefore, GenuineUtility.TickCount));
 						}
@@ -764,10 +760,10 @@ namespace Belikov.GenuineChannels.GenuineHttp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Connection, "HttpClientConnectionManager.ReestablishFailedConnection",
-						LogMessageType.ConnectionReestablished, GenuineExceptions.Get_Debugging_GeneralWarning("Reestablishing failed."), 
+						LogMessageType.ConnectionReestablished, GenuineExceptions.Get_Debugging_GeneralWarning("Reestablishing failed."),
 						null, httpClientConnection.Remote, null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
-						httpClientConnection.DbgConnectionId, 
+						httpClientConnection.DbgConnectionId,
 						0, 0, 0, null, null, null, null,
 						"Reestablishing the {0} HTTP connection has failed.", failedHttpRequest.Sender ? "SENDER" : "LISTENER");
 				}
@@ -812,9 +808,9 @@ namespace Belikov.GenuineChannels.GenuineHttp
 					httpClientConnection.LastMessageWasSentAt = GenuineUtility.TickCount;
 
 					httpClientConnection.SentContent = new GenuineChunkedStream(false);
-					MessageCoder.FillInLabelledStream(message, httpClientConnection.MessageContainer, 
-						httpClientConnection.MessagesBeingSent, httpClientConnection.SentContent, 
-						httpClientConnection.Sender_SendBuffer, 
+					MessageCoder.FillInLabelledStream(message, httpClientConnection.MessageContainer,
+						httpClientConnection.MessagesBeingSent, httpClientConnection.SentContent,
+						httpClientConnection.Sender_SendBuffer,
 						(int) this.ITransportContext.IParameterProvider[GenuineParameter.HttpRecommendedPacketSize]);
 
 					// LOG:
@@ -826,7 +822,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 
 							binaryLogWriter.WriteEvent(LogCategory.Transport, "HttpClientConnectionManager.LowLevel_Sender_Send",
 								LogMessageType.MessageIsSentAsynchronously, null, nextMessage, httpClientConnection.Remote, null,
-								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpClientConnection.Sender_ConnectionLevelSecurity, 
+								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpClientConnection.Sender_ConnectionLevelSecurity,
 								null,
 								httpClientConnection.DbgConnectionId, httpClientConnection.SendSequenceNo, 0, 0, null, null, null, null,
 								"The message will be sent in the SENDER stream N: {0}.", httpClientConnection.SendSequenceNo);
@@ -915,7 +911,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 				{
 					binaryLogWriter.WriteTransportContentEvent(LogCategory.LowLevelTransport, "HttpClientConnectionManager.LowLevel_InitiateHttpWebRequest",
 						LogMessageType.LowLevelTransport_AsyncSendingInitiating, null, null,
-						dbgHttpClientConnection == null ? null : dbgHttpClientConnection.Remote, 
+						dbgHttpClientConnection == null ? null : dbgHttpClientConnection.Remote,
 						binaryLogWriter[LogCategory.LowLevelTransport] > 1 ? inputStream : null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, dbgHttpClientConnection == null ? -1 : dbgHttpClientConnection.DbgConnectionId,
 						(int) inputStream.Length, null, null, null,
@@ -934,9 +930,9 @@ namespace Belikov.GenuineChannels.GenuineHttp
 				{
 					binaryLogWriter.WriteEvent(LogCategory.LowLevelTransport, "HttpClientConnectionManager.LowLevel_InitiateHttpWebRequest",
 						LogMessageType.LowLevelTransport_AsyncSendingInitiating, ex, null,
-						dbgHttpClientConnection == null ? null : dbgHttpClientConnection.Remote, 
+						dbgHttpClientConnection == null ? null : dbgHttpClientConnection.Remote,
 						null,
-						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, 
+						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
 						dbgHttpClientConnection == null ? -1 : dbgHttpClientConnection.DbgConnectionId,
 						0, 0, 0, null, null, null, null,
 						"Exception occurred while initiating HTTP request.");
@@ -966,9 +962,9 @@ namespace Belikov.GenuineChannels.GenuineHttp
 					{
 						binaryLogWriter.WriteEvent(LogCategory.LowLevelTransport, "HttpClientConnectionManager.LowLevel_InitiateHttpWebRequest",
 							LogMessageType.LowLevelTransport_AsyncSendingInitiating, ex, null,
-							dbgHttpClientConnection == null ? null : dbgHttpClientConnection.Remote, 
+							dbgHttpClientConnection == null ? null : dbgHttpClientConnection.Remote,
 							null,
-							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null, 
+							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
 							dbgHttpClientConnection == null ? -1 : dbgHttpClientConnection.DbgConnectionId,
 							0, 0, 0, null, null, null, null,
 							"Can't close the stream!");
@@ -1022,7 +1018,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 			{
 				binaryLogWriter.WriteConnectionParameterEvent(LogCategory.Connection, "HttpClientConnectionManager.LowLevel_OpenConnection",
 					LogMessageType.ConnectionParameters, null, remote, this.ITransportContext.IParameterProvider,
-					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpClientConnection.DbgConnectionId, 
+					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpClientConnection.DbgConnectionId,
 					"An HTTP connection is being established.");
 			}
 
@@ -1044,7 +1040,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 					// build the content
 					outputStream = new GenuineChunkedStream(false);
 					BinaryWriter binaryWriter = new BinaryWriter(outputStream);
-					HttpMessageCoder.WriteRequestHeader(binaryWriter, MessageCoder.PROTOCOL_VERSION, genuineConnectionType, httpClientConnection.HostId, 
+					HttpMessageCoder.WriteRequestHeader(binaryWriter, MessageCoder.PROTOCOL_VERSION, genuineConnectionType, httpClientConnection.HostId,
 						i == 0 ? HttpPacketType.Establishing_ResetConnection : HttpPacketType.Establishing, ++httpClientConnection.SendSequenceNo,
 						httpClientConnection.ConnectionName, remote.LocalHostUniqueIdentifier);
 
@@ -1108,15 +1104,15 @@ namespace Belikov.GenuineChannels.GenuineHttp
 								LogMessageType.ConnectionEstablishing, null, null, remote, null,
 								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, null, null,
 								httpClientConnection.DbgConnectionId, 0, 0, 0, null, null, null, null,
-								"The trial connection has been successfully completed. Content-Length: {0}; Content encoding: {1}; Content type: {2}; Protocol version: {3}; Respose uri: {4}; Status code: {5}; Status description: {6}; HTTP headers: {7}.", 
+								"The trial connection has been successfully completed. Content-Length: {0}; Content encoding: {1}; Content type: {2}; Protocol version: {3}; Respose uri: {4}; Status code: {5}; Status description: {6}; HTTP headers: {7}.",
 								httpWebResponse.ContentLength, httpWebResponse.ContentEncoding, httpWebResponse.ContentType,
-								httpWebResponse.ProtocolVersion, httpWebResponse.ResponseUri, 
+								httpWebResponse.ProtocolVersion, httpWebResponse.ResponseUri,
 								httpWebResponse.StatusCode, httpWebResponse.StatusDescription,
 								stringBuilderHeaders.ToString());
 						}
 
 						using (Stream responseStream = httpWebResponse.GetResponseStream())
-						{							
+						{
 							BinaryReader binaryReader = new BinaryReader(responseStream);
 							string serverUri;
 							int sequenceNo;
@@ -1189,11 +1185,11 @@ namespace Belikov.GenuineChannels.GenuineHttp
 			// LOG:
 			if ( binaryLogWriter != null && binaryLogWriter[LogCategory.HostInformation] > 0 )
 			{
-				binaryLogWriter.WriteHostInformationEvent("HttpClientConnectionManager.LowLevel_OpenConnection", 
-					LogMessageType.HostInformationCreated, null, remote, 
-					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpClientConnection.Sender_ConnectionLevelSecurity, 
-					httpClientConnection.Sender_ConnectionLevelSecurity == null ? null : httpClientConnection.Sender_ConnectionLevelSecurity.Name, 
-					httpClientConnection.DbgConnectionId, 
+				binaryLogWriter.WriteHostInformationEvent("HttpClientConnectionManager.LowLevel_OpenConnection",
+					LogMessageType.HostInformationCreated, null, remote,
+					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpClientConnection.Sender_ConnectionLevelSecurity,
+					httpClientConnection.Sender_ConnectionLevelSecurity == null ? null : httpClientConnection.Sender_ConnectionLevelSecurity.Name,
+					httpClientConnection.DbgConnectionId,
 					"HostInformation is ready for actions.");
 			}
 
@@ -1202,9 +1198,9 @@ namespace Belikov.GenuineChannels.GenuineHttp
 			{
 				binaryLogWriter.WriteEvent(LogCategory.Connection, "HttpClientConnectionManager.LowLevel_OpenConnection",
 					LogMessageType.ConnectionEstablished, null, null, remote, null,
-					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
-					httpClientConnection.Sender_ConnectionLevelSecurity, 
-					httpClientConnection.Sender_ConnectionLevelSecurity == null ? null : httpClientConnection.Sender_ConnectionLevelSecurity.Name, 
+					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
+					httpClientConnection.Sender_ConnectionLevelSecurity,
+					httpClientConnection.Sender_ConnectionLevelSecurity == null ? null : httpClientConnection.Sender_ConnectionLevelSecurity.Name,
 					httpClientConnection.DbgConnectionId, (int) genuineConnectionType, 0, 0, this.GetType().Name, remote.Url, remote.Url, null,
 					"The connection to the remote host is established.");
 			}
@@ -1331,9 +1327,9 @@ namespace Belikov.GenuineChannels.GenuineHttp
 					}
 
 					binaryLogWriter.WriteTransportContentEvent(LogCategory.LowLevelTransport, "HttpClientConnectionManager.Listener_OnEndReceiving",
-						LogMessageType.LowLevelTransport_AsyncReceivingCompleted, null, null, httpClientConnection.Remote, 
+						LogMessageType.LowLevelTransport_AsyncReceivingCompleted, null, null, httpClientConnection.Remote,
 						writeContent ? content : null,
-						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, 
+						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						httpClientConnection.DbgConnectionId, (int) httpWebResponse.ContentLength,
 						null, null, null,
 						"The content has been received.");
@@ -1360,9 +1356,9 @@ namespace Belikov.GenuineChannels.GenuineHttp
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, httpClientConnection.Listener_ConnectionLevelSecurity, null,
 						httpClientConnection.DbgConnectionId, 0, 0, 0, null, null, null, null,
 						"A response to the listener request has been received. Server uri: {0}. Sequence no: {1}. Packet type: {2}. Content-encoding: {3}. Content-length: {4}. Protocol version: {5}. Response uri: \"{6}\". Server: \"{7}\". Status code: {8}. Status description: \"{9}\".",
-						serverUri, sequenceNo, Enum.Format(typeof(HttpPacketType), httpPacketType, "g"), 
-						httpWebResponse.ContentEncoding, httpWebResponse.ContentLength, 
-						httpWebResponse.ProtocolVersion, httpWebResponse.ResponseUri, 
+						serverUri, sequenceNo, Enum.Format(typeof(HttpPacketType), httpPacketType, "g"),
+						httpWebResponse.ContentEncoding, httpWebResponse.ContentLength,
+						httpWebResponse.ProtocolVersion, httpWebResponse.ResponseUri,
 						httpWebResponse.Server, httpWebResponse.StatusCode, httpWebResponse.StatusDescription);
 				}
 
@@ -1459,7 +1455,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 			if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Connection] > 0 )
 			{
 				binaryLogWriter.WriteEvent(LogCategory.Connection, "HttpClientConnectionManager.ReleaseConnections",
-					LogMessageType.ReleaseConnections, reason, null, hostInformation, null, 
+					LogMessageType.ReleaseConnections, reason, null, hostInformation, null,
 					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 					null, null, -1, 0, 0, 0, Enum.Format(typeof(GenuineConnectionType), genuineConnectionType, "g"), null, null, null,
 					"\"{0}\" connections will be terminated.", Enum.Format(typeof(GenuineConnectionType), genuineConnectionType, "g"), null);
@@ -1559,7 +1555,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 					if ( binaryLogWriter != null )
 					{
 						binaryLogWriter.WriteEvent(LogCategory.Debugging, "HttpClientConnectionManager.StartReestablishingIfNecessary",
-							LogMessageType.ConnectionReestablishing, exception, null, null, null, 
+							LogMessageType.ConnectionReestablishing, exception, null, null, null,
 							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 							null, null, -1, 0, 0, 0, null, null, null, null,
 							"Reconnection is being started.");
@@ -1580,7 +1576,7 @@ namespace Belikov.GenuineChannels.GenuineHttp
 					if ( binaryLogWriter != null )
 					{
 						binaryLogWriter.WriteEvent(LogCategory.Debugging, "HttpClientConnectionManager.StartReestablishingIfNecessary",
-							LogMessageType.ConnectionReestablishing, exception, null, null, null, 
+							LogMessageType.ConnectionReestablishing, exception, null, null, null,
 							GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 							null, null, -1, 0, 0, 0, null, null, null, null,
 							"Reconnection is already in progress.");

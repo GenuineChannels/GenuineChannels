@@ -8,19 +8,15 @@
 using System;
 using System.Collections;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Principal;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Web;
-using System.Runtime.Remoting.Messaging;
-using System.Runtime.Serialization;
 
 using Belikov.GenuineChannels.BufferPooling;
 using Belikov.GenuineChannels.DotNetRemotingLayer;
@@ -28,6 +24,8 @@ using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.Security;
 using Belikov.GenuineChannels.TransportContext;
 using Belikov.GenuineChannels.Utilities;
+using Zyan.SafeDeserializationHelpers;
+using Zyan.SafeDeserializationHelpers.Channels;
 
 namespace Belikov.GenuineChannels
 {
@@ -156,7 +154,7 @@ namespace Belikov.GenuineChannels
 				url = url.Substring(0, slashIndex);
 
 			int firstColonIndex = url.IndexOf(':');
-			
+
 			if (firstColonIndex < 0)
 				return url; // no port at all
 
@@ -186,13 +184,13 @@ namespace Belikov.GenuineChannels
 					}
 				}
 
-				match = _Ipv6Address.Match(name2Check);	
+				match = _Ipv6Address.Match(name2Check);
 				if (!match.Success && !string.IsNullOrEmpty(portPart))
 				{
 					//  append stripped port for check  (here port without scope(s))
 					name2Check += ":" + portPart;
 
-					match = _Ipv6Address.Match(name2Check); 
+					match = _Ipv6Address.Match(name2Check);
 					if (!match.Success)
 						return null;
 					// the port is not a port: it is part of the IPv6 address
@@ -212,7 +210,7 @@ namespace Belikov.GenuineChannels
 		private static readonly Regex _Ipv6Address = new Regex(@"(?:^|(?<=\s))(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(?=\s|$)",
 			RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-		
+
 
 		/// <summary>
 		/// Splits the given url to a host name and a port.
@@ -904,21 +902,17 @@ namespace Belikov.GenuineChannels
 		/// <returns>The first sink provider in the chain.</returns>
 		public static IServerChannelSinkProvider GetDefaultServerSinkChain()
 		{
-			BinaryServerFormatterSinkProvider srv = null;
-
 			try
 			{
 				// server-side sinks
 				IDictionary sinkProps = new Hashtable();
 				sinkProps["typeFilterLevel"] = "Full";
-				srv = new BinaryServerFormatterSinkProvider(sinkProps, null);
+				return new SafeBinaryServerFormatterSinkProvider(sinkProps, null);
 			}
-			catch(Exception)
+			catch (Exception)
 			{
-				srv = new BinaryServerFormatterSinkProvider();
+				return new SafeBinaryServerFormatterSinkProvider();
 			}
-
-			return srv;
 		}
 
 		/// <summary>
@@ -974,7 +968,7 @@ namespace Belikov.GenuineChannels
 		/// <param name="stream">The stream containing serialized exception.</param>
 		public static Exception ReadException(Stream stream)
 		{
-			BinaryFormatter binaryFormatter = new BinaryFormatter();
+			var binaryFormatter = new BinaryFormatter().Safe();
 			return binaryFormatter.Deserialize(stream) as Exception;
 		}
 

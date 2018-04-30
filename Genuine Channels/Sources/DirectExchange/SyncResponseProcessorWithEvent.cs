@@ -1,20 +1,19 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using System.Runtime.Remoting.Messaging;
-using System.Runtime.Serialization;
 
 using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.Receiving;
 using Belikov.GenuineChannels.TransportContext;
 using Belikov.GenuineChannels.Utilities;
+using Zyan.SafeDeserializationHelpers;
 
 namespace Belikov.GenuineChannels.DirectExchange
 {
@@ -92,7 +91,7 @@ namespace Belikov.GenuineChannels.DirectExchange
 
 			if (message.ContainsSerializedException)
 			{
-				BinaryFormatter binaryFormatter = new BinaryFormatter();
+				var binaryFormatter = new BinaryFormatter().Safe();
 				this.DispatchedException = (Exception) binaryFormatter.Deserialize(message.Stream);
 			}
 			else
@@ -141,7 +140,7 @@ namespace Belikov.GenuineChannels.DirectExchange
 		/// Gets the uri of the remote host expected to send a response.
 		/// </summary>
 		public HostInformation Remote
-		{ 
+		{
 			get
 			{
 				return this._message.Sender;
@@ -151,8 +150,8 @@ namespace Belikov.GenuineChannels.DirectExchange
 		/// <summary>
 		/// Gets an indication whether the response processor does not require a separate thread for processing.
 		/// </summary>
-		public bool IsShortInProcessing 
-		{ 
+		public bool IsShortInProcessing
+		{
 			get
 			{
 				return false;
@@ -164,7 +163,7 @@ namespace Belikov.GenuineChannels.DirectExchange
 		/// the source message.
 		/// </summary>
 		public Message Message
-		{ 
+		{
 			get
 			{
 				return this._message;

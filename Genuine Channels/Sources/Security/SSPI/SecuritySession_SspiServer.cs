@@ -1,27 +1,22 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
 using System;
-using System.Collections;
-using System.Diagnostics;
 using System.IO;
-using System.Security;
-using System.Security.Cryptography;
-using System.Security.Principal;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Remoting.Channels;
+using System.Security.Principal;
 using System.Threading;
 
-using Belikov.GenuineChannels;
 using Belikov.GenuineChannels.DotNetRemotingLayer;
 using Belikov.GenuineChannels.Logbook;
 using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.TransportContext;
 using Belikov.GenuineChannels.Utilities;
+using Zyan.SafeDeserializationHelpers;
 
 namespace Belikov.GenuineChannels.Security.SSPI
 {
@@ -83,7 +78,7 @@ namespace Belikov.GenuineChannels.Security.SSPI
 				return null;
 
 			GenuineChunkedStream outputStream = null;
-			BinaryFormatter binaryFormatter = new BinaryFormatter();
+			var binaryFormatter = new BinaryFormatter().Safe();
 
 			// skip the status flag
 			if (connectionLevel)
@@ -121,7 +116,7 @@ namespace Belikov.GenuineChannels.Security.SSPI
 							// continue building a security context
 							GenuineChunkedStream sspiData = new GenuineChunkedStream(false);
 							this.SspiSecurityContext.BuildUpSecurityContext(input, sspiData);
- 
+
 							if (sspiData.Length == 0)
 							{
 								// SSPI session is built up
@@ -192,7 +187,7 @@ namespace Belikov.GenuineChannels.Security.SSPI
 		/// <param name="stream">Stream containing serialized exception.</param>
 		private Exception ReadException(Stream stream)
 		{
-			BinaryFormatter binaryFormatter = new BinaryFormatter();
+			var binaryFormatter = new BinaryFormatter().Safe();
 			return binaryFormatter.Deserialize(stream) as Exception;
 		}
 
@@ -245,12 +240,12 @@ namespace Belikov.GenuineChannels.Security.SSPI
 				WindowsIdentity windowsIdentity = this.WindowsIdentity;
 
 				binaryLogWriter.WriteEvent(LogCategory.Security, "SecuritySession_SspiServer.SessionEstablished",
-					LogMessageType.SecuritySessionKey, null, null, this.Remote, null, 
+					LogMessageType.SecuritySessionKey, null, null, this.Remote, null,
 					GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name, this,
-					this.Name, -1, 
-					0, 0, 0, 
-					string.Format("SSPI Package: {0} Features: {1} Win Auth Type: {2} IsAnonymous: {3} IsGuest: {4} IsSystem: {5} Name: {6}", 
-						this.KeyProvider_SspiServer.PackageName, Enum.Format(typeof(SspiFeatureFlags), this.KeyProvider_SspiServer.RequiredFeatures, "g"), 
+					this.Name, -1,
+					0, 0, 0,
+					string.Format("SSPI Package: {0} Features: {1} Win Auth Type: {2} IsAnonymous: {3} IsGuest: {4} IsSystem: {5} Name: {6}",
+						this.KeyProvider_SspiServer.PackageName, Enum.Format(typeof(SspiFeatureFlags), this.KeyProvider_SspiServer.RequiredFeatures, "g"),
 						windowsIdentity.AuthenticationType,
 						windowsIdentity.IsAnonymous, windowsIdentity.IsGuest, windowsIdentity.IsSystem, windowsIdentity.Name),
 					null, null, null,

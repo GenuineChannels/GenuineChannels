@@ -11,15 +11,14 @@ using System.Net;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Web;
 using System.Runtime.Remoting.Messaging;
-using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 
-using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.Logbook;
+using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.TransportContext;
+using Zyan.SafeDeserializationHelpers;
 
 namespace Belikov.GenuineChannels.DotNetRemotingLayer
 {
@@ -270,12 +269,12 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 
 				}
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				try
 				{
 					// LOG: put down the log record
-					if ( binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0 )
+					if (binaryLogWriter != null && binaryLogWriter[LogCategory.MessageProcessing] > 0)
 					{
 						binaryLogWriter.WriteEvent(LogCategory.MessageProcessing, "GenuineUniversalServerTransportSink.HandleIncomingMessage",
 							LogMessageType.MessageRequestInvoking, ex, message, message.Sender,
@@ -286,15 +285,15 @@ namespace Belikov.GenuineChannels.DotNetRemotingLayer
 					}
 
 					// return this exception as a result
-					BinaryFormatter binaryFormatter = new BinaryFormatter();
-					GenuineChunkedStream serializedException = new GenuineChunkedStream(false);
+					var binaryFormatter = new BinaryFormatter().Safe();
+					var serializedException = new GenuineChunkedStream(false);
 					binaryFormatter.Serialize(serializedException, ex);
 
-					Message reply = new Message(message, new TransportHeaders(), serializedException);
+					var reply = new Message(message, new TransportHeaders(), serializedException);
 					reply.ContainsSerializedException = true;
 					this.ITransportContext.ConnectionManager.Send(reply);
 				}
-				catch(Exception internalEx)
+				catch (Exception internalEx)
 				{
 					// It's a destiny not to deliver an exception back to the caller
 

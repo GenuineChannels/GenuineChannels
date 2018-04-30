@@ -45,11 +45,9 @@ namespace GenuineChannels.UnitTests.UnitTests
 			? System.Net.IPAddress.Loopback.ToString()
 			: System.Net.IPAddress.IPv6Loopback.ToString();
 
-
 		protected string ServiceUri => string.Format("{0}/{1}", ServiceUriBase, ServiceName);
 		protected string ServiceUriRem => string.Format("{0}/{1}", ServiceUriBase, ServiceNameRemPostfixed);
 
-	
 		/// <summary>
 		/// Starts the server. Runs for every test method.
 		/// </summary>
@@ -94,15 +92,13 @@ namespace GenuineChannels.UnitTests.UnitTests
 			ServerChannel = null;
 		}
 
-	
 		private string ServiceUriBase => string.Format("{0}://{1}:{2}", GcUriScheme, ServiceAddress, Port);
 		private IChannel ServerChannel { get; set; }
 		private MarshalByRefObject ServiceObj { get; set; }
 		private MarshalByRefObject ServiceWithPostfixObj { get; set; }
 		private ObjRef ServiceObjRef { get; set; }
 		private ObjRef ServiceWithPostfixObjRef { get; set; }
-		
-		
+
 		private string GcUriScheme
 		{
 			get
@@ -140,7 +136,7 @@ namespace GenuineChannels.UnitTests.UnitTests
 					break;
 				default: throw new NotImplementedException(_channelType.ToString());
 			}
-			
+
 			ChannelServices.RegisterChannel(channel, false);
 			return channel;
 		}

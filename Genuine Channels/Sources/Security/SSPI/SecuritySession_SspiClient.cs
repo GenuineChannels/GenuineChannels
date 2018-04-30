@@ -1,26 +1,20 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
 using System;
-using System.Collections;
-using System.Diagnostics;
 using System.IO;
-using System.Security;
-using System.Security.Cryptography;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Remoting.Channels;
 using System.Threading;
 
-using Belikov.GenuineChannels;
 using Belikov.GenuineChannels.DotNetRemotingLayer;
-using Belikov.GenuineChannels.Logbook;
 using Belikov.GenuineChannels.Messaging;
 using Belikov.GenuineChannels.TransportContext;
 using Belikov.GenuineChannels.Utilities;
+using Zyan.SafeDeserializationHelpers;
 
 namespace Belikov.GenuineChannels.Security.SSPI
 {
@@ -77,7 +71,7 @@ namespace Belikov.GenuineChannels.Security.SSPI
 				return null;
 
 			GenuineChunkedStream outputStream = null;
-			BinaryFormatter binaryFormatter = new BinaryFormatter();
+			var binaryFormatter = new BinaryFormatter().Safe();
 
 			// skip the status flag
 			if (connectionLevel)
