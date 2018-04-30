@@ -1,7 +1,7 @@
 /* Genuine Channels product.
- * 
+ *
  * Copyright (c) 2002-2007 Dmitry Belikov. All rights reserved.
- * 
+ *
  * This source code comes under and must be used and distributed according to the Genuine Channels license agreement.
  */
 
@@ -28,6 +28,7 @@ namespace Belikov.GenuineChannels.GenuineTcp
 	/// </summary>
 	internal class TcpSocketInfo : Stream
 	{
+#if DEBUG
 		/// <summary>
 		/// Constructs an instance of the TcpSocketInfo class.
 		/// </summary>
@@ -35,11 +36,16 @@ namespace Belikov.GenuineChannels.GenuineTcp
 		/// <param name="iTransportContext">Transport Context.</param>
 		/// <param name="connectionName">The name of the connection.</param>
 		/// <param name="typeOfSocket">The type of the socket used for debugging.</param>
-		internal TcpSocketInfo(Socket socket, ITransportContext iTransportContext, string connectionName
-#if DEBUG
-			,string typeOfSocket
+		internal TcpSocketInfo(Socket socket, ITransportContext iTransportContext, string connectionName, string typeOfSocket)
+#else
+		/// <summary>
+		/// Constructs an instance of the TcpSocketInfo class.
+		/// </summary>
+		/// <param name="socket">The socket.</param>
+		/// <param name="iTransportContext">Transport Context.</param>
+		/// <param name="connectionName">The name of the connection.</param>
+		internal TcpSocketInfo(Socket socket, ITransportContext iTransportContext, string connectionName)
 #endif
-			)
 		{
 			this.Socket = socket;
 			this.ITransportContext = iTransportContext;
@@ -51,7 +57,6 @@ namespace Belikov.GenuineChannels.GenuineTcp
 			this._connectionNumber = Interlocked.Increment(ref _dbg_ConnectionCounter);
 #endif
 		}
-
 
 		/// <summary>
 		/// To guarantee atomic access to local members.
@@ -72,8 +77,8 @@ namespace Belikov.GenuineChannels.GenuineTcp
 		/// <returns>A String that represents the current Object.</returns>
 		public override string ToString()
 		{
-			return string.Format("(No: {0}. Type: {1}. Valid: {2}. Type: {3}. Name: {4}. Identifier: {5}.)", 
-				this._connectionNumber, this._typeOfSocket, this.IsValid, 
+			return string.Format("(No: {0}. Type: {1}. Valid: {2}. Type: {3}. Name: {4}. Identifier: {5}.)",
+				this._connectionNumber, this._typeOfSocket, this.IsValid,
 				Enum.Format(typeof(GenuineConnectionType), this.GenuineConnectionType, "g"),
 				this.ConnectionName, this.DbgConnectionId);
 		}
@@ -280,8 +285,8 @@ namespace Belikov.GenuineChannels.GenuineTcp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Transport] > 0 )
 				{
 					binaryLogWriter.WriteTransportContentEvent(LogCategory.Transport, "TcpSocketInfo.Write",
-						LogMessageType.SynchronousSendingStarted, null, null, this.Remote == null ? null : this.Remote, 
-						binaryLogWriter[LogCategory.Transport] > 1 ? new MemoryStream(GenuineUtility.CutOutBuffer(buffer, offset, count)) : null, 
+						LogMessageType.SynchronousSendingStarted, null, null, this.Remote == null ? null : this.Remote,
+						binaryLogWriter[LogCategory.Transport] > 1 ? new MemoryStream(GenuineUtility.CutOutBuffer(buffer, offset, count)) : null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						this.DbgConnectionId, count, this.Remote == null || this.Remote.PhysicalAddress == null ? null : this.Remote.PhysicalAddress.ToString(),
 						null, null,
@@ -299,8 +304,8 @@ namespace Belikov.GenuineChannels.GenuineTcp
 						if ( binaryLogWriter != null && binaryLogWriter[LogCategory.LowLevelTransport] > 0 )
 						{
 							binaryLogWriter.WriteTransportContentEvent(LogCategory.LowLevelTransport, "TcpSocketInfo.Write",
-								LogMessageType.LowLevelTransport_SyncSendingCompleted, null, null, this.Remote, 
-								binaryLogWriter[LogCategory.LowLevelTransport] > 1 ? new MemoryStream(GenuineUtility.CutOutBuffer(buffer, offset, bytesSent)) : null, 
+								LogMessageType.LowLevelTransport_SyncSendingCompleted, null, null, this.Remote,
+								binaryLogWriter[LogCategory.LowLevelTransport] > 1 ? new MemoryStream(GenuineUtility.CutOutBuffer(buffer, offset, bytesSent)) : null,
 								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 								this.DbgConnectionId, bytesSent, this.Socket.RemoteEndPoint.ToString(),
 								null, null,
@@ -313,8 +318,8 @@ namespace Belikov.GenuineChannels.GenuineTcp
 						if ( binaryLogWriter != null && binaryLogWriter[LogCategory.LowLevelTransport] > 0 )
 						{
 							binaryLogWriter.WriteTransportContentEvent(LogCategory.LowLevelTransport, "TcpSocketInfo.Write",
-								LogMessageType.LowLevelTransport_SyncSendingCompleted, ex, null, this.Remote == null ? null : this.Remote, 
-								binaryLogWriter[LogCategory.LowLevelTransport] > 1 ? new MemoryStream(GenuineUtility.CutOutBuffer(buffer, offset, bytesSent)) : null, 
+								LogMessageType.LowLevelTransport_SyncSendingCompleted, ex, null, this.Remote == null ? null : this.Remote,
+								binaryLogWriter[LogCategory.LowLevelTransport] > 1 ? new MemoryStream(GenuineUtility.CutOutBuffer(buffer, offset, bytesSent)) : null,
 								GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 								this.DbgConnectionId, bytesSent, this.Socket.RemoteEndPoint.ToString(),
 								null, null,
@@ -338,8 +343,8 @@ namespace Belikov.GenuineChannels.GenuineTcp
 				if ( binaryLogWriter != null && binaryLogWriter[LogCategory.Transport] > 0 )
 				{
 					binaryLogWriter.WriteEvent(LogCategory.Transport, "TcpSocketInfo.Write",
-						LogMessageType.SynchronousSendingStarted, ex, null, this.Remote == null ? null : this.Remote, 
-						binaryLogWriter[LogCategory.Transport] > 1 ? new MemoryStream(GenuineUtility.CutOutBuffer(buffer, offset, count)) : null, 
+						LogMessageType.SynchronousSendingStarted, ex, null, this.Remote == null ? null : this.Remote,
+						binaryLogWriter[LogCategory.Transport] > 1 ? new MemoryStream(GenuineUtility.CutOutBuffer(buffer, offset, count)) : null,
 						GenuineUtility.CurrentThreadId, Thread.CurrentThread.Name,
 						null, null, this.DbgConnectionId, 0, 0, 0, count.ToString(), null, null, null,
 						"An exception is raised during synchronous sending.");
@@ -438,7 +443,7 @@ namespace Belikov.GenuineChannels.GenuineTcp
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports reading.
 		/// </summary>
-		public override bool CanRead 
+		public override bool CanRead
 		{
 			get
 			{
@@ -449,7 +454,7 @@ namespace Belikov.GenuineChannels.GenuineTcp
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports seeking.
 		/// </summary>
-		public override bool CanSeek 
+		public override bool CanSeek
 		{
 			get
 			{
@@ -460,7 +465,7 @@ namespace Belikov.GenuineChannels.GenuineTcp
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports writing.
 		/// </summary>
-		public override bool CanWrite 
+		public override bool CanWrite
 		{
 			get
 			{
@@ -471,7 +476,7 @@ namespace Belikov.GenuineChannels.GenuineTcp
 		/// <summary>
 		/// Gets the length in bytes of the stream.
 		/// </summary>
-		public override long Length 
+		public override long Length
 		{
 			get
 			{
@@ -483,7 +488,7 @@ namespace Belikov.GenuineChannels.GenuineTcp
 		/// Gets or sets the position within the current stream.
 		/// Always fires NotSupportedException exception.
 		/// </summary>
-		public override long Position 
+		public override long Position
 		{
 			get
 			{
