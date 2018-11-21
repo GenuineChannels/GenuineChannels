@@ -144,15 +144,15 @@ namespace Belikov.GenuineChannels
 		{
 			port = 0;
 
-		    if (string.IsNullOrEmpty(url))
-		        return null;
+			if (string.IsNullOrEmpty(url))
+				return null;
 
-		    Uri parsed;
-		    if (Uri.TryCreate(url, UriKind.Absolute, out parsed))
-		    {
-		        port = parsed.IsDefaultPort ? 0 : parsed.Port;
-		        return parsed.DnsSafeHost.Replace("%25", "%").TrimStart('[').TrimEnd(']');
-		    }
+			Uri parsed;
+			if (Uri.TryCreate(url, UriKind.Absolute, out parsed))
+			{
+				port = parsed.IsDefaultPort ? 0 : parsed.Port;
+				return parsed.DnsSafeHost.Replace("%25", "%").TrimStart('[').TrimEnd(']');
+			}
 
 			Match match = _UrlToHost.Match(url);
 			if (!match.Success)

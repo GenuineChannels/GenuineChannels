@@ -70,32 +70,32 @@ namespace GenuineChannels.UnitTests.UnitTests
 			RunSplitToHostAndPortWithInputDictionary(testDict);
 		}
 
-	    [TestMethod,Description("Tests with Uris build using the .NET UriBuilder")]
-	    public void SplitToHostAndPort_IPv6_UriSyntax()
-	    {
-            // as described in RFC 6874 (https://tools.ietf.org/html/rfc6874):
-            // Used within a URI, a literal IPv6 address is always embedded between "[" and "]"
-            // Zone IDs have to be URL encoded ("%" ==> "%25").
-	        var testDict = new Dictionary<string, Tuple<string, int>>
-	        {
-	            { "gtcp://[::1]:1233", new Tuple<string, int>("::1", 1233)},
-	            { "gtcp://[fec0:0:0:ffff::1]:1234", new Tuple<string, int>("fec0:0:0:ffff::1", 1234)},
-	            { "gtcp://[fec0:0:0:ffff::1%251]:1235", new Tuple<string, int>("fec0:0:0:ffff::1%1", 1235)},
-	            { "gtcp://[fe80::1d2b:147c:c69a:26ef%2530]:1236", new Tuple<string, int>("fe80::1d2b:147c:c69a:26ef%30", 1236)},
-	            { "gtcp://[::1]", new Tuple<string, int>("::1", 0)},
-	            { "gtcp://[fec0:0:0:ffff::1%251]", new Tuple<string, int>("fec0:0:0:ffff::1%1", 0)},
-	            { "gtcp://[fe80::1d2b:147c:c69a:26ef%2530]", new Tuple<string, int>("fe80::1d2b:147c:c69a:26ef%30", 0)},
-	            { "gtcp://[::1]:1233/subdomain", new Tuple<string, int>("::1", 1233)},
-	            { "gtcp://[fec0:0:0:ffff::1]:1234/a/b/c", new Tuple<string, int>("fec0:0:0:ffff::1", 1234)},
-	            { "gtcp://[fec0:0:0:ffff::1%251]:1235/index.rem", new Tuple<string, int>("fec0:0:0:ffff::1%1", 1235)},
-	            { "gtcp://[fe80::1d2b:147c:c69a:26ef%2530]:1236/service", new Tuple<string, int>("fe80::1d2b:147c:c69a:26ef%30", 1236)},
-	            { "gtcp://[::1]/myservices", new Tuple<string, int>("::1", 0)},
-	            { "gtcp://[fec0:0:0:ffff::1%251]/a/b/c", new Tuple<string, int>("fec0:0:0:ffff::1%1", 0)},
-	            { "gtcp://[fe80::1d2b:147c:c69a:26ef%2530]/index.rem", new Tuple<string, int>("fe80::1d2b:147c:c69a:26ef%30", 0)}
-	        };
+		[TestMethod, Description("Tests with Uris build using the .NET UriBuilder")]
+		public void SplitToHostAndPort_IPv6_UriSyntax()
+		{
+			// as described in RFC 6874 (https://tools.ietf.org/html/rfc6874):
+			// Used within a URI, a literal IPv6 address is always embedded between "[" and "]"
+			// Zone IDs have to be URL encoded ("%" ==> "%25").
+			var testDict = new Dictionary<string, Tuple<string, int>>
+			{
+				{ "gtcp://[::1]:1233", new Tuple<string, int>("::1", 1233)},
+				{ "gtcp://[fec0:0:0:ffff::1]:1234", new Tuple<string, int>("fec0:0:0:ffff::1", 1234)},
+				{ "gtcp://[fec0:0:0:ffff::1%251]:1235", new Tuple<string, int>("fec0:0:0:ffff::1%1", 1235)},
+				{ "gtcp://[fe80::1d2b:147c:c69a:26ef%2530]:1236", new Tuple<string, int>("fe80::1d2b:147c:c69a:26ef%30", 1236)},
+				{ "gtcp://[::1]", new Tuple<string, int>("::1", 0)},
+				{ "gtcp://[fec0:0:0:ffff::1%251]", new Tuple<string, int>("fec0:0:0:ffff::1%1", 0)},
+				{ "gtcp://[fe80::1d2b:147c:c69a:26ef%2530]", new Tuple<string, int>("fe80::1d2b:147c:c69a:26ef%30", 0)},
+				{ "gtcp://[::1]:1233/subdomain", new Tuple<string, int>("::1", 1233)},
+				{ "gtcp://[fec0:0:0:ffff::1]:1234/a/b/c", new Tuple<string, int>("fec0:0:0:ffff::1", 1234)},
+				{ "gtcp://[fec0:0:0:ffff::1%251]:1235/index.rem", new Tuple<string, int>("fec0:0:0:ffff::1%1", 1235)},
+				{ "gtcp://[fe80::1d2b:147c:c69a:26ef%2530]:1236/service", new Tuple<string, int>("fe80::1d2b:147c:c69a:26ef%30", 1236)},
+				{ "gtcp://[::1]/myservices", new Tuple<string, int>("::1", 0)},
+				{ "gtcp://[fec0:0:0:ffff::1%251]/a/b/c", new Tuple<string, int>("fec0:0:0:ffff::1%1", 0)},
+				{ "gtcp://[fe80::1d2b:147c:c69a:26ef%2530]/index.rem", new Tuple<string, int>("fe80::1d2b:147c:c69a:26ef%30", 0)}
+			};
 
-	        RunSplitToHostAndPortWithInputDictionary(testDict);
-	    }
+			RunSplitToHostAndPortWithInputDictionary(testDict);
+		}
 
 		private static void RunSplitToHostAndPortWithInputDictionary(Dictionary<string, Tuple<string, int>> testDict)
 		{
