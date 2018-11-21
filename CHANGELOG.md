@@ -1,5 +1,11 @@
 # GenuineChannels Change Log
 
+## v2.5.9.11
+
+* Fixed IPv6 host name URL encoding according to RFC 6874 (#10)
+* Fixed assembly file version resource to match the Nuget package version (#9)
+* Updated Zyan.SafeDeserializationHelpers library to the latest version
+
 ## v2.5.9.10
 
 This version no longer supports .NET Framework 3.0 and below. The minimum supported version is .NET 3.5.
