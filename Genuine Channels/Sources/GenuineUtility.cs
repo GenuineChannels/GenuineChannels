@@ -139,10 +139,20 @@ namespace Belikov.GenuineChannels
 		/// </summary>
 		/// <param name="url">The url to be splitted.</param>
 		/// <param name="port">Out parameter. The fetched port.</param>
-		/// <returns>The host name.</returns>
+		/// <returns>The host name, or null if <paramref name="url"/> was null or could not parsed.</returns>
 		public static string SplitToHostAndPort(string url, out int port)
 		{
 			port = 0;
+
+		    if (string.IsNullOrEmpty(url))
+		        return null;
+
+		    Uri parsed;
+		    if (Uri.TryCreate(url, UriKind.Absolute, out parsed))
+		    {
+		        port = parsed.IsDefaultPort ? 0 : parsed.Port;
+		        return parsed.DnsSafeHost.Replace("%25", "%").TrimStart('[').TrimEnd(']');
+		    }
 
 			Match match = _UrlToHost.Match(url);
 			if (!match.Success)
