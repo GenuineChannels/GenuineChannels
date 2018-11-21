@@ -39,7 +39,11 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers
 // by using the '*' as shown below:
 
+// Keep this as is until v3.0 is published, then change to "3.0.0.0"
 [assembly: AssemblyVersion("2.5.9.9")]
+
+// Keep this in sync with the Nuget package version
+[assembly: AssemblyFileVersion("2.5.9.11")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the

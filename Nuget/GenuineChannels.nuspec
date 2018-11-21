@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>GenuineChannels</id>
-    <version>2.5.9.10</version>
+    <version>2.5.9.11</version>
     <authors>Dmitry Belikov, Sergey Tkachev</authors>
     <owners>yallie, rainbird</owners>
     <licenseUrl>https://raw.githubusercontent.com/zyanfx/GenuineChannels/master/LICENSE</licenseUrl>
@@ -15,22 +15,26 @@
     <releaseNotes>
     What's new:
 
+      v2.5.9.11:
+      — Fixed IPv6 host name URL encoding according to RFC 6874
+      — Fixed assembly file version resource to match the Nuget package version
+
       v2.5.9.10:
-      - IPv6 support (.NET Framework version 3.5 and 4.6 only)
-      - Optional TCP port sharing
-      - Optional TCP dual socket mode will enable both IPv4 and IPv6 for the socket listener (Vista and Longhorn above only)
-      - BinaryFormatter security fixes (dangerous delegates, unguarded DataSet and WindowsIdentity deserialization)
-      - Using built-in compression classes instead of the external ICSharpCode.SharpZipLib.dll library
-      - Dropped support for .NET Framework 3.0 and below
+      — IPv6 support (.NET Framework version 3.5 and 4.6 only)
+      — Optional TCP port sharing
+      — Optional TCP dual socket mode will enable both IPv4 and IPv6 for the socket listener (Vista and Longhorn above only)
+      — BinaryFormatter security fixes (dangerous delegates, unguarded DataSet and WindowsIdentity deserialization)
+      — Using built-in compression classes instead of the external ICSharpCode.SharpZipLib.dll library
+      — Dropped support for .NET Framework 3.0 and below
 
       v2.5.9.9:
-      - This is the initial release of the MIT-licensed open-source version of GenuineChannels.
+      — This is the initial release of the MIT-licensed open-source version of GenuineChannels.
     </releaseNotes>
     <copyright>Copyright (c) 2005-2018 Dmitry Belikov, Sergey Tkachev and Contributors</copyright>
     <tags>.net remoting duplex tcp udp shared memory channel genuine channels rpc security async compression encryption communication socket sockets nat firewall</tags>
     <dependencies>
       <group>
-        <dependency id="Zyan.SafeDeserializationHelpers" version="0.3.0" />
+        <dependency id="Zyan.SafeDeserializationHelpers" version="0.5.0" />
       </group>
     </dependencies>
   </metadata>
